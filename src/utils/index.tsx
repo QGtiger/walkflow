@@ -1,3 +1,5 @@
+const basename = process.env.NODE_ENV === "development" ? "" : "/walkflow";
+
 export function generateUUID(): string {
   return Math.random().toString(36).slice(2) + Date.now().toString(36);
 }
@@ -7,7 +9,7 @@ export function deepClone<T>(obj: T): T {
 }
 
 export function getShareUrl(flowId: string): string {
-  return `${window.location.origin}/share/${flowId}`;
+  return `${window.location.origin}${basename}/share/${flowId}`;
 }
 
 export function copy(text: string) {
