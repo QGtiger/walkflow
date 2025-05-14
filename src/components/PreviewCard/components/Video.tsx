@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import { InteractionState, PreviewCardModel } from "../model";
 import { useLatest } from "ahooks";
 
+const offset = 0.2; // 0.1s 的偏移量，避免视频播放时的抖动
+
 export default function Video() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const { recordingUrl, state, targetStepInfo, setState, hasMoreSteps, reset } =
@@ -33,7 +35,7 @@ export default function Video() {
           // 到达目标时间点时暂停
           if (
             _latestTargetStepInfo &&
-            currentTime >= _latestTargetStepInfo.t - 300
+            currentTime >= _latestTargetStepInfo.t - offset * 1000
           ) {
             setState(InteractionState.Paused);
             return;
@@ -50,6 +52,7 @@ export default function Video() {
     };
 
     const handlePause = () => {
+      console.log("pause");
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
@@ -84,7 +87,7 @@ export default function Video() {
       videoElement.pause();
       // hotspot 步骤需要跳转到指定时间
       if (targetStepInfo.type === "hotspot") {
-        videoElement.currentTime = targetStepInfo.t / 1000;
+        videoElement.currentTime = targetStepInfo.t / 1000 - offset;
       }
     } else if (state === InteractionState.Completed) {
       reset();
