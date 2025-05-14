@@ -1,9 +1,9 @@
-import axios from 'axios';
-import { createMessage } from '@/utils/customMessage';
-import { navigate } from '@/utils/navigation';
+import axios from "axios";
+import { createMessage } from "@/utils/customMessage";
+import { navigate } from "@/utils/navigation";
 
 // 走控制台登录
-const ACCESS_TOKEN_KEY = 'BOSS_ACCESS_TOKEN';
+const ACCESS_TOKEN_KEY = "BOSS_ACCESS_TOKEN";
 
 export function getAccessToken() {
   return localStorage.getItem(ACCESS_TOKEN_KEY);
@@ -30,7 +30,7 @@ client.interceptors.request.use((config) => {
 });
 
 client.interceptors.response.use(
-  // @ts-expect-error
+  // @ts-expect-error 类型断言
   (res) => {
     const { code, data, msg } = res.data;
     if (code === 200) {
@@ -42,19 +42,19 @@ client.interceptors.response.use(
     } else {
       if (code == 401) {
         // 未登录
-        setAccessToken('');
+        setAccessToken("");
 
-        navigate('/login');
+        navigate("/login");
       }
 
       createMessage(
         {
-          type: 'error',
+          type: "error",
           content: msg,
         },
         {
           hideOther: true,
-        },
+        }
       );
 
       return {
@@ -72,5 +72,5 @@ client.interceptors.response.use(
       code: 500,
       errorMsg: error.message,
     };
-  },
+  }
 );

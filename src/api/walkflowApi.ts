@@ -36,9 +36,9 @@ client.interceptors.request.use((config) => {
 });
 
 client.interceptors.response.use(
-  // @ts-expect-error
+  // @ts-expect-error 类型断言
   (res) => {
-    const { code, data, message } = res.data;
+    const { code, data, message = "未知服务器错误" } = res.data;
     if (code === 200) {
       return {
         success: true,
