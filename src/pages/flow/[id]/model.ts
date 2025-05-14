@@ -1,10 +1,10 @@
-import { walkflowRequest } from '@/api/walkflowApi';
-import { createCustomModel } from '@/common/createModel';
-import { deepClone } from '@/utils';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useReactive, useRequest } from 'ahooks';
-import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { walkflowRequest } from "@/api/walkflowApi";
+import { createCustomModel } from "@/common/createModel";
+import { deepClone } from "@/utils";
+import { useQuery } from "@tanstack/react-query";
+import { useReactive, useRequest } from "ahooks";
+import { useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 
 interface WalkflowDetail {
   flowId: string;
@@ -14,7 +14,7 @@ interface WalkflowDetail {
 
 export const FlowDetailModel = createCustomModel(() => {
   const { id } = useParams();
-  const [stepUuid, setStepUuid] = useState('');
+  const [stepUuid, setStepUuid] = useState("");
 
   // 用响应式数据
   const viewModel = useReactive({
@@ -27,7 +27,7 @@ export const FlowDetailModel = createCustomModel(() => {
   const latestSchemaRef = useRef<FlowSchemaV1 | undefined>(undefined);
 
   useQuery({
-    queryKey: ['flowEdit', id],
+    queryKey: ["flowEdit", id],
     queryFn: async () => {
       const { data } = await walkflowRequest<WalkflowDetail>({
         url: `detail/${id}`,
@@ -45,7 +45,9 @@ export const FlowDetailModel = createCustomModel(() => {
         const i = item.uid;
         i && setStepUuid(i);
 
-        const firstHotSpot = data.schema.config.steps.find((it) => it.type === 'hotspot');
+        const firstHotSpot = data.schema.config.steps.find(
+          (it) => it.type === "hotspot"
+        );
         if (firstHotSpot) {
           viewModel.ratio = firstHotSpot.w / firstHotSpot.h;
         }
@@ -59,10 +61,14 @@ export const FlowDetailModel = createCustomModel(() => {
     async (opt?: { name?: string }) => {
       if (!flowDetail) return;
       const updatedSchema = flowDetail.schema;
-      if (JSON.stringify(updatedSchema) === JSON.stringify(latestSchemaRef.current)) return;
+      if (
+        JSON.stringify(updatedSchema) ===
+        JSON.stringify(latestSchemaRef.current)
+      )
+        return;
       await walkflowRequest({
-        url: '/update',
-        method: 'POST',
+        url: "/update",
+        method: "POST",
         data: {
           ...opt,
           schema: updatedSchema,
@@ -74,7 +80,7 @@ export const FlowDetailModel = createCustomModel(() => {
     {
       manual: true,
       debounceWait: 600,
-    },
+    }
   );
 
   return {
