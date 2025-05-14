@@ -1,7 +1,7 @@
-import { walkflowRequest } from '@/api/walkflowApi';
-import { createCustomModel } from '@/common/createModel';
-import { useQuery } from '@tanstack/react-query';
-import { useRequest } from 'ahooks';
+import { walkflowRequest } from "@/api/walkflowApi";
+import { createCustomModel } from "@/common/createModel";
+import { useQuery } from "@tanstack/react-query";
+import { useRequest } from "ahooks";
 
 export const DashboardModel = createCustomModel(() => {
   const {
@@ -9,20 +9,21 @@ export const DashboardModel = createCustomModel(() => {
     isFetching,
     refetch,
   } = useQuery({
-    queryKey: ['walkflows'],
+    queryKey: ["walkflows"],
     queryFn: async () => {
       const { data } = await walkflowRequest<WalkflowDashboardItem[]>({
-        url: '/list',
+        url: "/list",
       });
       return data;
     },
+    staleTime: 1000 * 60, // 缓存 1 minute
   });
 
   const { run: delWorkflow } = useRequest(
     (flowId: string) => {
       return walkflowRequest({
-        url: '/delete',
-        method: 'POST',
+        url: "/delete",
+        method: "POST",
         data: {
           flowId,
         },
@@ -30,7 +31,7 @@ export const DashboardModel = createCustomModel(() => {
     },
     {
       manual: true,
-    },
+    }
   );
 
   return {
