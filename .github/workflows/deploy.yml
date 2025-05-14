@@ -43,6 +43,10 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build
         run: pnpm run build
+        env:
+          NODE_ENV: production
+          API_BOSS_URL: ${{ vars.API_BOSS_URL }}
+          API_WALKFLOW_URL: ${{ vars.API_WALKFLOW_URL }}
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
@@ -53,7 +57,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        env:
-          NODE_ENV: production
-          API_BOSS_URL: https://test-boss-api.shadow-rpa.net
-          API_WALKFLOW_URL: ${{ vars.API_WALKFLOW_URL }}
