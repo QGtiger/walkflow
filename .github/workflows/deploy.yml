@@ -55,5 +55,5 @@ jobs:
         uses: actions/deploy-pages@v4
         env:
           NODE_ENV: production
-          API_BOSS_URL: ${{ vars.API_BOSS_URL }}
+          API_BOSS_URL: https://test-boss-api.shadow-rpa.net
           API_WALKFLOW_URL: ${{ vars.API_WALKFLOW_URL }}
