@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { DashboardModel } from "../../model";
 import { copy, getShareUrl } from "@/utils";
 import { createNotification } from "@/utils/customNotification";
+import { createModal } from "@/utils/customModal";
 
 export default function WalkflowCard({
   data: { flowId, thumbnail, flowName, createdAt },
@@ -29,7 +30,13 @@ export default function WalkflowCard({
       key: "delete",
       label: "删除Walkflow",
       onClick() {
-        return delWorkflow(flowId);
+        createModal({
+          title: "删除Walkflow",
+          content: "确定要删除该Walkflow吗？",
+          onOk: () => {
+            return delWorkflow(flowId);
+          },
+        });
       },
     },
   ];

@@ -1,5 +1,12 @@
 import { useLocation, useNavigate, useOutlet } from "react-router-dom";
-import { Button, ConfigProvider, message, notification, Result } from "antd";
+import {
+  Button,
+  ConfigProvider,
+  message,
+  Modal,
+  notification,
+  Result,
+} from "antd";
 import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
 
 import "./layout.css";
@@ -10,6 +17,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MessageRef } from "@/utils/customMessage";
 import { setLocation, setNavigator } from "@/utils/navigation";
 import { UserModel } from "@/models/UserModel";
+import { ModalRef } from "@/utils/customModal";
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   useMount(() => {
@@ -49,16 +57,19 @@ const queryClient = new QueryClient({
   },
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export default () => {
   const outlet = useOutlet();
   const navigate = useNavigate();
   const location = useLocation();
   const [api, notificationHolder] = notification.useNotification();
   const [messageApi, messageContextHolder] = message.useMessage();
+  const [modalApi, modalContextHolder] = Modal.useModal();
 
   useEffect(() => {
     NotificationRef.current = api;
     MessageRef.current = messageApi;
+    ModalRef.current = modalApi;
   });
 
   useEffect(() => {
@@ -84,6 +95,7 @@ export default () => {
             <div>
               {notificationHolder}
               {messageContextHolder}
+              {modalContextHolder}
             </div>
           </UserModel.Provider>
         </ConfigProvider>
