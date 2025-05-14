@@ -1,6 +1,5 @@
 import { Input, Button, Checkbox, Form, Card, Typography } from "antd";
 import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
-import { createMessage } from "@/utils/customMessage";
 import { request } from "@/api/request";
 import { encrypt } from "@/utils/crypto";
 import { createNotification } from "@/utils/customNotification";
