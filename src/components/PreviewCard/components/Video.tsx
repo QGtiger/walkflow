@@ -33,7 +33,7 @@ export default function Video() {
           // 到达目标时间点时暂停
           if (
             _latestTargetStepInfo &&
-            currentTime >= _latestTargetStepInfo.t - 200
+            currentTime >= _latestTargetStepInfo.t - 300
           ) {
             setState(InteractionState.Paused);
             return;
