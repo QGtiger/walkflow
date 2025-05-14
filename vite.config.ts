@@ -5,6 +5,8 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
+  console.log("mode", mode);
+  console.log("process.env", JSON.stringify(process.env));
   const env =
     mode === "development" ? loadEnv(mode, process.cwd(), "") : process.env;
 
