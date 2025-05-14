@@ -9,10 +9,6 @@ on:
   # 这个选项可以使你手动在 Action tab 页面触发工作流
   workflow_dispatch:
 
-env: # 全局环境变量
-  API_BOSS_URL: ${{ vars.API_BOSS_URL }}
-  API_WALKFLOW_URL: ${{ vars.API_WALKFLOW_URL }}
-
 # 设置 GITHUB_TOKEN 的权限，以允许部署到 GitHub Pages。
 permissions:
   contents: read
@@ -57,3 +53,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        env:
+          NODE_ENV: production
+          API_BOSS_URL: ${{ vars.API_BOSS_URL }}
+          API_WALKFLOW_URL: ${{ vars.API_WALKFLOW_URL }}
