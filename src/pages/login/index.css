@@ -1,0 +1,4 @@
+.login-gradient {
+  background: radial-gradient(circle at top left, rgba(211, 228, 253, 0.4), transparent 40%),
+    radial-gradient(circle at bottom right, rgba(229, 222, 255, 0.25), transparent 30%);
+}
