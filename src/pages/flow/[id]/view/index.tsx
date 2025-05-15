@@ -7,7 +7,7 @@ export default function View() {
     <div className="p-6 flex justify-center items-center h-full">
       <PreviewCard
         schema={schema}
-        className="max-w-[1200px] mt-[-100px]"
+        className="max-w-[1200px]"
         targetUuid={stepUuid}
       />
     </div>
