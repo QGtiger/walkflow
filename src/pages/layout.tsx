@@ -18,6 +18,7 @@ import { MessageRef } from "@/utils/customMessage";
 import { setLocation, setNavigator } from "@/utils/navigation";
 import { UserModel } from "@/models/UserModel";
 import { ModalRef } from "@/utils/customModal";
+import { UploadModel } from "@/models/UploadModel";
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   useMount(() => {
@@ -90,14 +91,16 @@ export default () => {
             },
           }}
         >
-          <UserModel.Provider>
-            {outlet}
-            <div>
-              {notificationHolder}
-              {messageContextHolder}
-              {modalContextHolder}
-            </div>
-          </UserModel.Provider>
+          <UploadModel.Provider>
+            <UserModel.Provider>
+              {outlet}
+              <div>
+                {notificationHolder}
+                {messageContextHolder}
+                {modalContextHolder}
+              </div>
+            </UserModel.Provider>
+          </UploadModel.Provider>
         </ConfigProvider>
       </ErrorBoundary>
     </QueryClientProvider>

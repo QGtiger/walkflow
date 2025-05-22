@@ -1,10 +1,10 @@
-import { Select, Skeleton } from 'antd';
-import EmptyWalkflow from '../EmptyWalkflow';
+import { Select, Skeleton } from "antd";
+import EmptyWalkflow from "../EmptyWalkflow";
 
-import './index.css';
-import ScrollContent from '@/components/ScrollContent';
-import WalkflowCard from './WalkflowCard';
-import { DashboardModel } from '../../model';
+import "./index.css";
+import ScrollContent from "@/components/ScrollContent";
+import WalkflowCard from "./WalkflowCard";
+import { DashboardModel } from "../../model";
 
 export default function Main() {
   const { flowList, isFetching } = DashboardModel.useModel();
@@ -16,7 +16,9 @@ export default function Main() {
           <div className="flex justify-between">
             <div className="left space-y-2">
               <div className="text-2xl font-bold">My Walkflows</div>
-              <div className="text-sm text-gray-500">创建和管理您的 Walkflows</div>
+              <div className="text-sm text-gray-500">
+                创建和管理您的 Walkflows
+              </div>
             </div>
           </div>
           <div className="flex justify-between">
@@ -25,9 +27,9 @@ export default function Main() {
                 defaultValue=""
                 style={{ width: 240 }}
                 options={[
-                  { value: '', label: '全部 Walkflows' },
-                  { value: 'draft', label: '未发布 Walkflows' },
-                  { value: 'published', label: '已发布 Walkflows' },
+                  { value: "", label: "全部 Walkflows" },
+                  { value: "draft", label: "未发布 Walkflows" },
+                  { value: "published", label: "已发布 Walkflows" },
                 ]}
               />
             </div>
@@ -36,26 +38,26 @@ export default function Main() {
                 defaultValue=""
                 style={{ width: 240 }}
                 options={[
-                  { value: '', label: '默认排序' },
-                  { value: '1', label: '创建时间排序' },
-                  { value: '2', label: '更新时间排序' },
+                  { value: "", label: "默认排序" },
+                  { value: "1", label: "创建时间排序" },
+                  { value: "2", label: "更新时间排序" },
                 ]}
               />
             </div>
           </div>
-          <ScrollContent className="h-1 flex-1 mt-4 scroll-content">
-            {isFetching ? (
-              <Skeleton active paragraph={{ rows: 4 }} className="w-full" />
-            ) : flowList?.length ? (
+          {isFetching ? (
+            <Skeleton active paragraph={{ rows: 4 }} className="w-full" />
+          ) : flowList?.length ? (
+            <ScrollContent className="h-1 flex-1 mt-4 scroll-content">
               <div className="flex flex-wrap gap-4">
                 {flowList?.map((it) => {
                   return <WalkflowCard key={it.flowId} data={it} />;
                 })}
               </div>
-            ) : (
-              <EmptyWalkflow />
-            )}
-          </ScrollContent>
+            </ScrollContent>
+          ) : (
+            <EmptyWalkflow />
+          )}
         </div>
       </div>
     </main>
