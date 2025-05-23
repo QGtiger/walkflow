@@ -1,23 +1,49 @@
-import { useMount, useSize, useUpdate } from 'ahooks';
-import { FlowDetailModel } from '../../model';
-import { Button, Input } from 'antd';
-import FocusIndicator from '@/components/FocusIndicator';
+import { useMount, useSize, useUpdate } from "ahooks";
+import { FlowDetailModel } from "../../model";
+import { Button, Input } from "antd";
+import FocusIndicator from "@/components/FocusIndicator";
 
 export default function Main() {
-  const { stepInfo, ratio, updateWalkflow, screenRecordingUrl, designerConfig } = FlowDetailModel.useModel();
-  const canvasSize = useSize(() => document.querySelector('#view-card'));
-  const height = canvasSize ? `${canvasSize.width / ratio}px` : 'auto';
-  console.log('canvasSize', canvasSize);
+  const {
+    stepInfo,
+    ratio,
+    updateWalkflow,
+    screenRecordingUrl,
+    designerConfig,
+  } = FlowDetailModel.useModel();
+  const canvasSize = useSize(() => document.querySelector("#preview-wrapper"));
 
-  if (!stepInfo) return '未知的步骤';
+  const padding = 60;
+
+  const { width: canvasWidth, height: canvasHeight } = canvasSize || {
+    width: 0,
+    height: 0,
+  };
+
+  let width = 0;
+  let height = 0;
+  if (canvasWidth && canvasHeight) {
+    const maxHeight = canvasHeight - padding;
+
+    width = canvasWidth - padding;
+    height = Math.min(width / ratio, maxHeight);
+
+    width = height * ratio;
+  }
+
+  if (!stepInfo) return "未知的步骤";
 
   let conent = null;
-  if (stepInfo.type === 'chapter') {
+  if (stepInfo.type === "chapter") {
     const { title, subtitle, actions, align } = stepInfo;
     // TODO 先简单就是第一个
     conent = (
       <div className="w-full h-full relative">
-        <video src={screenRecordingUrl} controls={false} className="w-full h-full" />
+        <video
+          src={screenRecordingUrl}
+          controls={false}
+          className="w-full h-full"
+        />
         <div className=" absolute inset-0 backdrop-blur-md bg-[#ffffffb3]">
           <div className="h-full  flex flex-col justify-center px-10 gap-2">
             <Input
@@ -55,7 +81,7 @@ export default function Main() {
               }}
             >
               {actions.map((it, index) => {
-                if (it.type === 'button') {
+                if (it.type === "button") {
                   return (
                     <Button size="large" type="primary" key={index}>
                       <Input
@@ -71,20 +97,24 @@ export default function Main() {
                     </Button>
                   );
                 }
-                return '暂不支持类型:' + it.type;
+                return "暂不支持类型:" + it.type;
               })}
             </div>
           </div>
         </div>
       </div>
     );
-  } else if (stepInfo.type === 'hotspot') {
+  } else if (stepInfo.type === "hotspot") {
     if (canvasSize) {
       const { w, h, x, y, title, align } = stepInfo;
       const ratio = canvasSize.width / w;
       conent = (
         <div className="w-full h-full relative">
-          <img src={stepInfo.screenshotUrl} alt="" className="w-full h-full object-cover select-none" />
+          <img
+            src={stepInfo.screenshotUrl}
+            alt=""
+            className="w-full h-full object-cover select-none"
+          />
           <FocusIndicator
             draggable
             content={title}
@@ -111,18 +141,20 @@ export default function Main() {
 
   return (
     <div
-      className="p-4 select-none h-full"
+      className="select-none h-full overflow-hidden relative flex items-center justify-center"
       style={{
         backgroundImage: `url(${designerConfig?.background})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        padding: `${padding / 2}px`,
       }}
     >
+      <div id="preview-wrapper" className=" absolute inset-0"></div>
       <div
-        id="view-card"
         className="ring-1 ring-gray-300 rounded-md bg-white overflow-hidden"
         style={{
           height,
+          width,
         }}
       >
         {conent}

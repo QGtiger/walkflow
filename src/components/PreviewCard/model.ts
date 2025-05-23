@@ -6,6 +6,8 @@ export interface PreviewCardProps {
   className?: string;
 
   targetUuid?: string;
+
+  embed?: boolean;
 }
 
 // @ts-expect-error 交互状态枚举

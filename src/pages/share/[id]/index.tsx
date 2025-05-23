@@ -1,30 +1,43 @@
-import { walkflowRequest } from '@/api/walkflowApi';
-import CustomHeader from '@/components/CustomHeader';
-import CustomLoading from '@/components/CustomLoading';
-import PreviewCard from '@/components/PreviewCard';
-import { useRequest } from 'ahooks';
-import { useParams } from 'react-router-dom';
+import { walkflowRequest } from "@/api/walkflowApi";
+import CustomHeader from "@/components/CustomHeader";
+import CustomLoading from "@/components/CustomLoading";
+import PreviewCard from "@/components/PreviewCard";
+import { useRequest } from "ahooks";
+import classNames from "classnames";
+import { useRef } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 
 export default function Share() {
   const { id } = useParams<{ id: string }>();
   const { data, loading } = useRequest(() => {
     return walkflowRequest<WalkflowDetail>({
-      url: '/openapi/detail/' + id,
-      method: 'GET',
+      url: "/openapi/detail/" + id,
+      method: "GET",
     });
   });
+  const [searchParams] = useSearchParams();
+  const embed = searchParams.get("embed") === "true";
+  const mainRef = useRef<HTMLDivElement>(null);
 
-  console.log('data', data);
+  console.log(embed);
 
   return (
     <div className="flex flex-col h-screen">
-      <CustomHeader />
-      <main className="flex-1 flex items-center justify-center">
+      {!embed && <CustomHeader />}
+      <main
+        className="flex-1 flex items-center justify-center overflow-hidden"
+        ref={mainRef}
+      >
         {loading || !data?.data?.schema ? (
           <CustomLoading />
         ) : (
-          <div className="w-[80%]">
-            <PreviewCard schema={data?.data?.schema} />
+          <div
+            className={classNames(
+              embed ? "" : "py-10",
+              "w-full h-full relative"
+            )}
+          >
+            <PreviewCard schema={data?.data?.schema} embed={embed} />
           </div>
         )}
       </main>

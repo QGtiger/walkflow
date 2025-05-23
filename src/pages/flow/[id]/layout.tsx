@@ -1,21 +1,20 @@
-import CustomHeader from '@/components/CustomHeader';
+import CustomHeader from "@/components/CustomHeader";
 import {
-  AppstoreOutlined,
-  BarsOutlined,
-  CopyOutlined,
-  EditOutlined,
   EllipsisOutlined,
-  HomeOutlined,
   PartitionOutlined,
   PicLeftOutlined,
   ShareAltOutlined,
-} from '@ant-design/icons';
-import { Breadcrumb, Button, Input, Popover, Segmented, Typography } from 'antd';
-import { useLocation, useNavigate, useOutlet, useParams } from 'react-router-dom';
-import { FlowDetailModel } from './model';
-import { motion } from 'framer-motion';
-import { createNotification } from '@/utils/customNotification';
-import { copy, getShareUrl } from '@/utils';
+} from "@ant-design/icons";
+import { Button, Popover, Segmented } from "antd";
+import {
+  useLocation,
+  useNavigate,
+  useOutlet,
+  useParams,
+} from "react-router-dom";
+import { FlowDetailModel } from "./model";
+import { motion } from "framer-motion";
+import ShareContent from "./ShareContent";
 
 function DetailLayout() {
   const outlet = useOutlet();
@@ -24,9 +23,7 @@ function DetailLayout() {
   const nav = useNavigate();
   const { pathname } = useLocation();
 
-  const v = pathname.split('/').at(-1) === 'view' ? 'view' : 'edit';
-
-  const shareUrl = getShareUrl(id as string);
+  const v = pathname.split("/").at(-1) === "view" ? "view" : "edit";
 
   return (
     <div className="flex flex-col h-screen">
@@ -36,8 +33,8 @@ function DetailLayout() {
             <Segmented
               value={v}
               options={[
-                { label: '编辑', value: 'edit', icon: <PicLeftOutlined /> },
-                { label: '预览', value: 'view', icon: <PartitionOutlined /> },
+                { label: "编辑", value: "edit", icon: <PicLeftOutlined /> },
+                { label: "预览", value: "view", icon: <PartitionOutlined /> },
               ]}
               onChange={(value) => {
                 nav(`/flow/${id}/${value}`, {
@@ -47,29 +44,7 @@ function DetailLayout() {
             />
             <Popover
               placement="bottomRight"
-              content={
-                <Input
-                  variant="filled"
-                  className="w-[340px]"
-                  value={shareUrl}
-                  disabled
-                  suffix={
-                    <Button
-                      size="small"
-                      onClick={() => {
-                        copy(shareUrl);
-                        createNotification({
-                          type: 'success',
-                          message: '复制成功',
-                          description: '已复制到剪贴板',
-                        });
-                      }}
-                    >
-                      <CopyOutlined />
-                    </Button>
-                  }
-                />
-              }
+              content={<ShareContent />}
               arrow={false}
               trigger="click"
             >
@@ -90,11 +65,11 @@ function DetailLayout() {
               animate={{
                 scale: [1, 2, 2, 1, 1],
                 rotate: [0, 0, 180, 180, 0],
-                borderRadius: ['3%', '3%', '50%', '50%', '3%'],
+                borderRadius: ["3%", "3%", "50%", "50%", "3%"],
               }}
               transition={{
                 duration: 2,
-                ease: 'easeInOut',
+                ease: "easeInOut",
                 times: [0, 0.2, 0.5, 0.8, 1],
                 repeat: Infinity,
                 repeatDelay: 1,
