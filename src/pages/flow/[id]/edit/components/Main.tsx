@@ -105,9 +105,9 @@ export default function Main() {
       </div>
     );
   } else if (stepInfo.type === "hotspot") {
-    if (canvasSize) {
+    if (width) {
       const { w, h, x, y, title, align } = stepInfo;
-      const ratio = canvasSize.width / w;
+      const ratio = width / w;
       conent = (
         <div className="w-full h-full relative">
           <img
