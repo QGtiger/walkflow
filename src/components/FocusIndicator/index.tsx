@@ -1,6 +1,11 @@
-import { CSSProperties, MouseEventHandler, useLayoutEffect, useState } from 'react';
-import './index.css'; // 创建对应的CSS文件
-import { Popover } from 'antd';
+import {
+  type CSSProperties,
+  type MouseEventHandler,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import { Popover } from "antd";
 
 interface FocusIndicatorProps {
   x: number; // X坐标（单位px）
@@ -31,7 +36,7 @@ const FocusIndicator = ({
   x,
   y,
   size = 100,
-  color = 'rgba(255, 200, 0, 0.8)',
+  color = "rgba(255, 200, 0, 0.8)",
   duration = 1200,
   style,
   content,
@@ -42,6 +47,7 @@ const FocusIndicator = ({
   contentStyle,
   onClick,
 }: FocusIndicatorProps) => {
+  const focusContainerRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x, y });
 
   // 防止闪烁
@@ -75,22 +81,22 @@ const FocusIndicator = ({
       setPosition(latestPosition);
     }
 
-    window.addEventListener('mousemove', mouseMove);
+    window.addEventListener("mousemove", mouseMove);
 
     window.addEventListener(
-      'mouseup',
+      "mouseup",
       () => {
         onPositionChange?.(latestPosition);
-        window.removeEventListener('mousemove', mouseMove);
+        window.removeEventListener("mousemove", mouseMove);
       },
       {
         once: true,
-      },
+      }
     );
   };
 
   const containerStyle: CSSProperties = {
-    position: 'absolute',
+    position: "absolute",
     left: position.x,
     top: position.y,
     width: size,
@@ -101,9 +107,9 @@ const FocusIndicator = ({
   };
 
   const pulseStyle = {
-    '--pulse-color': color,
-    '--animation-duration': `${duration}ms`,
-    '--antd-arrow-background-color': color,
+    "--pulse-color": color,
+    "--animation-duration": `${duration}ms`,
+    "--antd-arrow-background-color": color,
   } as CSSProperties;
 
   return (
@@ -111,17 +117,19 @@ const FocusIndicator = ({
       open
       content={
         <div style={contentStyle}>
-          <span className="text-white whitespace-break-spaces ">{content || '请补充文案'}</span>
+          <span className="text-white whitespace-break-spaces ">
+            {content || "请补充文案"}
+          </span>
         </div>
       }
       styles={{
         body: {
-          background: 'var(--pulse-color)',
+          background: "var(--pulse-color)",
         },
         root: pulseStyle,
       }}
       getPopupContainer={() => {
-        return document.querySelector('.focus-container')!;
+        return focusContainerRef.current || document.body;
       }}
       // placement="bottom"
     >
@@ -136,7 +144,7 @@ const FocusIndicator = ({
           onClick?.();
         }}
       >
-        <div className="focus-container cursor-pointer">
+        <div ref={focusContainerRef} className="focus-container cursor-pointer">
           <div className="pulse-ring" style={pulseStyle} />
           <div className="pulse-core" style={pulseStyle} />
         </div>

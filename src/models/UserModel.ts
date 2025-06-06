@@ -38,7 +38,7 @@ export const UserModel = createCustomModel(() => {
 
           // 设置walkflow的请求头
           commonApiConfig.setHeaders({
-            walkflow_userid: data.uuid,
+            walkflowuserid: data.uuid,
           });
         }
       }

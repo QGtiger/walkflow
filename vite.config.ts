@@ -8,6 +8,28 @@ export default defineConfig(({ mode }) => {
   const env =
     mode === "development" ? loadEnv(mode, process.cwd(), "") : process.env;
 
+  const isLibBuild = env.VITE_BUILD_MODE === "lib";
+
+  if (isLibBuild) {
+    return {
+      plugins: [react()],
+      define: {
+        "process.env": env,
+      },
+      resolve: {
+        alias: [{ find: "@", replacement: path.resolve(__dirname, "src") }],
+      },
+      build: {
+        lib: {
+          entry: "src/preview-tourbit-web-components.tsx", // 自定义入口文件
+          name: "PreviewTourbit",
+          formats: ["umd"],
+          fileName: "preview-tourbit-bundle",
+        },
+      },
+    };
+  }
+
   return {
     base: process.env.NODE_ENV === "development" ? "/" : "/walkflow/",
     plugins: [react()],
@@ -17,6 +39,7 @@ export default defineConfig(({ mode }) => {
     define: {
       "process.env": env,
     },
+
     // 不做代理，否则我页面也会被代理
     // server: {
     //   port: 8009,

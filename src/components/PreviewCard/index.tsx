@@ -8,8 +8,10 @@ import {
 import Video from "./components/Video";
 import Chapter from "./components/Chapter";
 import HotSpot from "./components/HotSpot";
+import { useRef } from "react";
 
 function PreviewCard() {
+  const previewWrapperRef = useRef<HTMLDivElement>(null);
   const {
     schema,
     className,
@@ -21,7 +23,7 @@ function PreviewCard() {
     embed,
   } = PreviewCardModel.useModel();
   const { version = "1.0", designer } = schema;
-  const canvasSize = useSize(() => document.querySelector("#preview-wrapper"));
+  const canvasSize = useSize(() => previewWrapperRef.current);
   const padding = embed ? 40 : 80;
 
   if (version !== "1.0") {
@@ -49,7 +51,7 @@ function PreviewCard() {
 
   return (
     <div className="w-full h-full relative flex items-center justify-center">
-      <div id="preview-wrapper" className=" absolute inset-0"></div>
+      <div ref={previewWrapperRef} className=" absolute inset-0"></div>
       <div
         className={classNames(
           "rounded-xl  flex items-center justify-center",
@@ -99,6 +101,7 @@ function PreviewCard() {
 }
 
 export default (props: PreviewCardProps) => {
+  console.log("PreviewCard props", props);
   const v = useCreation(() => {
     return props;
   }, [JSON.stringify(props)]);
