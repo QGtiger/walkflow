@@ -3,6 +3,7 @@ import { createCustomModel } from "@/common/createModel";
 import { deepClone } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useReactive, useRequest } from "ahooks";
+import { App } from "antd";
 import { useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -15,6 +16,7 @@ interface WalkflowDetail {
 export const FlowDetailModel = createCustomModel(() => {
   const { id } = useParams();
   const [stepUuid, setStepUuid] = useState("");
+  const { message } = App.useApp();
 
   // 用响应式数据
   const viewModel = useReactive({
@@ -83,6 +85,26 @@ export const FlowDetailModel = createCustomModel(() => {
     }
   );
 
+  const removeStep = (uid: string) => {
+    if (!flowDetail) return;
+    const steps = flowDetail.schema.config.steps;
+    if (steps.length <= 1) {
+      message.error(
+        "别删了，我滴活爹！至少保留一个步骤。 要不左上角退出去，删除这条 tourbit吧"
+      );
+      return;
+    }
+    let index = steps.findIndex((it) => it.uid === uid);
+    if (index !== -1) {
+      steps.splice(index, 1);
+      if (index > steps.length - 1) {
+        index = steps.length - 1; // 确保索引不越界
+      }
+      setStepUuid(steps[index].uid);
+      updateWalkflow();
+    }
+  };
+
   return {
     // 这里配合 layout 进行数据断言
     flowDetail: flowDetail!,
@@ -96,5 +118,6 @@ export const FlowDetailModel = createCustomModel(() => {
 
     updateWalkflow,
     designerConfig: flowDetail?.schema.designer,
+    removeStep,
   };
 });

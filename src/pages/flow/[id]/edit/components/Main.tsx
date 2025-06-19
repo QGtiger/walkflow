@@ -113,7 +113,7 @@ export default function Main() {
           <img
             src={stepInfo.screenshotUrl}
             alt=""
-            className="w-full h-full object-cover select-none"
+            className="w-full h-full object-cover select-none pointer-events-none"
           />
           <FocusIndicator
             draggable
