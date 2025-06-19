@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { InteractionState, PreviewCardModel } from "../model";
 import { useLatest } from "ahooks";
 
-const offset = 0.2; // 0.1s 的偏移量，避免视频播放时的抖动
+const offset = 0; // 0.1s 的偏移量，避免视频播放时的抖动
 
 export default function Video() {
   const videoRef = useRef<HTMLVideoElement>(null);
