@@ -16,7 +16,7 @@ export default function EditFlow() {
         <Left />
       </div>
       <div className="w-1 flex-1 bg-[#fbfbfb] scroll-content">
-        <Main key={stepUuid} />
+        <Main />
       </div>
       <div className=" flex-grow-0 flex-shrink-0 border-0 border-l border-gray-200 border-solid">
         <Right key={stepUuid} />

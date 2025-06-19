@@ -45,7 +45,10 @@ export default function Main() {
           className="w-full h-full"
         />
         <div className=" absolute inset-0 backdrop-blur-md bg-[#ffffffb3]">
-          <div className="h-full  flex flex-col justify-center px-10 gap-2">
+          <div
+            className="h-full  flex flex-col justify-center px-10 gap-2"
+            key={stepInfo.uid}
+          >
             <Input
               className="p-0 text-2xl font-semibold"
               defaultValue={title}
