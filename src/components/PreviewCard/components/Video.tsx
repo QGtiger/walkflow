@@ -6,8 +6,15 @@ const offset = 0.2; // 0.1s 的偏移量，避免视频播放时的抖动
 
 export default function Video() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { recordingUrl, state, targetStepInfo, setState, hasMoreSteps, reset } =
-    PreviewCardModel.useModel();
+  const {
+    recordingUrl,
+    state,
+    targetStepInfo,
+    setState,
+    hasMoreSteps,
+    reset,
+    getPrevHotspotStepTimeStamp,
+  } = PreviewCardModel.useModel();
 
   const latestTargetStepInfo = useLatest(targetStepInfo);
   const latestHasMoreStepsRef = useLatest(hasMoreSteps);
@@ -18,7 +25,6 @@ export default function Video() {
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-
     const handlePlay = () => {
       // 精确时间检测逻辑
       animationFrameRef.current = requestAnimationFrame(
@@ -29,9 +35,7 @@ export default function Video() {
           if (_latestTargetStepInfo.type !== "hotspot") {
             throw new Error("当前步骤不是 hotspot");
           }
-
           const currentTime = videoRef.current.currentTime * 1000;
-
           // 到达目标时间点时暂停
           if (
             _latestTargetStepInfo &&
@@ -40,7 +44,6 @@ export default function Video() {
             setState(InteractionState.Paused);
             return;
           }
-
           // 继续轮询检测
           if (!videoRef.current.paused) {
             animationFrameRef.current = requestAnimationFrame(
@@ -50,21 +53,18 @@ export default function Video() {
         }
       );
     };
-
     const handlePause = () => {
       console.log("pause");
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-
     video.addEventListener("play", handlePlay);
     video.addEventListener("pause", handlePause);
     const handleEnded = () => {
       setState(InteractionState.Completed);
     };
     video.addEventListener("ended", handleEnded);
-
     return () => {
       video.removeEventListener("play", handlePlay);
       video.removeEventListener("pause", handlePause);
@@ -88,6 +88,10 @@ export default function Video() {
       // hotspot 步骤需要跳转到指定时间
       if (targetStepInfo.type === "hotspot") {
         videoElement.currentTime = targetStepInfo.t / 1000 - offset;
+      } else if (targetStepInfo.type === "chapter") {
+        // chapter 步骤需要跳转到 当前 后续的首个 hotspot 步骤
+        const t = getPrevHotspotStepTimeStamp(targetStepInfo.uid);
+        videoElement.currentTime = t / 1000 - offset;
       }
     } else if (state === InteractionState.Completed) {
       reset();

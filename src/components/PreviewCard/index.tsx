@@ -1,4 +1,4 @@
-import { useCreation, useSize } from "ahooks";
+import { useCreation, useReactive, useSize } from "ahooks";
 import classNames from "classnames";
 import {
   PreviewCardModel,
@@ -8,10 +8,9 @@ import {
 import Video from "./components/Video";
 import Chapter from "./components/Chapter";
 import HotSpot from "./components/HotSpot";
-import { useRef } from "react";
+import ProcessBar from "./components/ProcessBar";
 
 function PreviewCard() {
-  const previewWrapperRef = useRef<HTMLDivElement>(null);
   const {
     schema,
     className,
@@ -21,14 +20,11 @@ function PreviewCard() {
     state,
     jumpStepDestination,
     embed,
+    loading,
   } = PreviewCardModel.useModel();
   const { version = "1.0", designer } = schema;
-  const canvasSize = useSize(() => previewWrapperRef.current);
+  const canvasSize = useSize(() => document.querySelector("#preview-wrapper"));
   const padding = embed ? 40 : 80;
-
-  if (version !== "1.0") {
-    return <div>不支持的版本</div>;
-  }
 
   const { width: canvasWidth, height: canvasHeight } = canvasSize || {
     width: 0,
@@ -45,13 +41,34 @@ function PreviewCard() {
 
     width = height * ratio;
   }
+  const processBarHeight = Math.min(100, height * 0.15);
 
   const showStep = state !== InteractionState.Playing;
   const cls = showStep ? "opacity-100" : "opacity-0 pointer-events-none";
 
+  const hiddenProcess = useCreation(() => {
+    if (targetStepInfo.type === "hotspot") {
+      const r = height / targetStepInfo.h;
+      const sy = targetStepInfo.y * r;
+      return height - sy < processBarHeight;
+    }
+  }, [targetStepInfo, height]);
+
+  if (loading) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        资源预加载中...
+      </div>
+    );
+  }
+
+  if (version !== "1.0") {
+    return <div>不支持的版本</div>;
+  }
+
   return (
     <div className="w-full h-full relative flex items-center justify-center">
-      <div ref={previewWrapperRef} className=" absolute inset-0"></div>
+      <div id="preview-wrapper" className=" absolute inset-0"></div>
       <div
         className={classNames(
           "rounded-xl  flex items-center justify-center",
@@ -94,6 +111,10 @@ function PreviewCard() {
               />
             )}
           </div>
+
+          <div className={classNames(" absolute bottom-0 left-0 w-full")}>
+            {!hiddenProcess && <ProcessBar height={processBarHeight} />}
+          </div>
         </div>
       </div>
     </div>
@@ -101,7 +122,6 @@ function PreviewCard() {
 }
 
 export default (props: PreviewCardProps) => {
-  console.log("PreviewCard props", props);
   const v = useCreation(() => {
     return props;
   }, [JSON.stringify(props)]);

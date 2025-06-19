@@ -1,5 +1,7 @@
 import { createCustomModel } from "@/common/createModel";
 import { useEffect, useState } from "react";
+import { preloadSchemaResources } from "./utils";
+import { useRequest } from "ahooks";
 
 export interface PreviewCardProps {
   schema: FlowSchemaV1;
@@ -10,7 +12,6 @@ export interface PreviewCardProps {
   embed?: boolean;
 }
 
-// @ts-expect-error 交互状态枚举
 export enum InteractionState {
   NotStarted, // 未开始
   Playing, // 正在播放
@@ -22,11 +23,29 @@ const NextStepKey = "next";
 
 export const PreviewCardModel = createCustomModel((props: PreviewCardProps) => {
   const { schema, targetUuid } = props;
+
+  const {
+    loading,
+    runAsync,
+    data: renderSchema,
+  } = useRequest(
+    () => {
+      return preloadSchemaResources(schema);
+    },
+    {
+      manual: true,
+    }
+  );
+
+  useEffect(() => {
+    runAsync();
+  }, [JSON.stringify(schema)]);
+
   const {
     version = "1.0",
     designer,
     config: { steps, screenRecordingUrl },
-  } = schema;
+  } = renderSchema || schema;
 
   if (steps.length == 0) throw new Error("没有步骤");
 
@@ -61,6 +80,17 @@ export const PreviewCardModel = createCustomModel((props: PreviewCardProps) => {
 
   const hasBg = designer.background && designer.background !== "";
 
+  const getStep = (uid: string) => {
+    const stepIndex = steps.findIndex((it) => it.uid === uid);
+    if (stepIndex === -1) {
+      throw new Error(`没有找到指定的步骤: ${uid}`);
+    }
+    return {
+      step: steps[stepIndex],
+      index: stepIndex,
+    };
+  };
+
   const jumpStepDestination = (uid: string) => {
     if (uid === NextStepKey) {
       const t = num + 1;
@@ -78,19 +108,41 @@ export const PreviewCardModel = createCustomModel((props: PreviewCardProps) => {
         }
       }
     } else {
-      // 直接跳转到指定步骤
-      const index = steps.findIndex((it) => it.uid === uid);
-      if (index !== -1) {
-        setNum(index);
-        setState(InteractionState.Paused);
-      } else {
-        throw new Error("没有找到指定的步骤");
+      const { index } = getStep(uid);
+      setNum(index);
+      setState(InteractionState.Paused);
+    }
+  };
+
+  const jumpStepByNum = (n: number) => {
+    const uid = steps[n % steps.length].uid;
+    jumpStepDestination(uid);
+  };
+
+  // 获取前一个 hotspot step
+  // 如果当前 step 是 hotspot，则返回当前 step
+  const getPrevHotspotStepTimeStamp = (uid: string): number => {
+    const { index, step } = getStep(uid);
+    if (step.type === "hotspot") {
+      return step.t;
+    }
+    let i = index - 1;
+    while (true) {
+      if (i < 0) {
+        return 0; // 没有找到前一个 hotspot step
       }
+      const s = steps[i];
+      if (s.type === "hotspot") {
+        return s.t;
+      }
+      i--;
     }
   };
 
   return {
     ...props,
+    loading,
+    num,
     steps,
     state,
     setState,
@@ -98,8 +150,11 @@ export const PreviewCardModel = createCustomModel((props: PreviewCardProps) => {
     hasBg,
     recordingUrl: screenRecordingUrl,
     targetStepInfo,
+    getStep,
     jumpStepDestination,
+    jumpStepByNum,
     hasMoreSteps: num <= steps.length - 1,
+    getPrevHotspotStepTimeStamp,
     reset() {
       setNum(0);
       setState(InteractionState.NotStarted);
