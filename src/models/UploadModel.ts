@@ -1,5 +1,6 @@
 import { createCustomModel } from "@/common/createModel";
 import { useCreation } from "ahooks";
+import { message } from "antd";
 import { useEffect, useRef, useState } from "react";
 
 class CountDown {
@@ -66,6 +67,8 @@ export const UploadModel = createCustomModel(() => {
 
           const p = Math.min(Math.floor(process * 100), maxCount);
           countDownIns.start(p);
+        } else if (type === "uploadWalkFlowResourceError") {
+          message.error(data || "上传失败");
         }
       }
     }
