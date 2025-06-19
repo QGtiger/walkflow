@@ -1,5 +1,6 @@
 import { walkflowRequest } from "@/api/walkflowApi";
 import { createCustomModel } from "@/common/createModel";
+import { generateDefaultChapterStep } from "@/common/step";
 import { deepClone } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useReactive, useRequest } from "ahooks";
@@ -27,6 +28,7 @@ export const FlowDetailModel = createCustomModel(() => {
 
   const { flowDetail, ratio } = viewModel;
   const latestSchemaRef = useRef<FlowSchemaV1 | undefined>(undefined);
+  const steps = flowDetail?.schema.config.steps || [];
 
   useQuery({
     queryKey: ["flowEdit", id],
@@ -86,11 +88,15 @@ export const FlowDetailModel = createCustomModel(() => {
   );
 
   const removeStep = (uid: string) => {
-    if (!flowDetail) return;
-    const steps = flowDetail.schema.config.steps;
     if (steps.length <= 1) {
       message.error(
         "别删了，我滴活爹！至少保留一个步骤。 要不左上角退出去，删除这条 tourbit吧"
+      );
+      return;
+    }
+    if (steps.filter((it) => it.type === "hotspot").length <= 1) {
+      message.error(
+        "别删了，我滴活爹！至少保留一个HotSpot。 要不左上角退出去，删除这条 tourbit吧"
       );
       return;
     }
@@ -103,6 +109,14 @@ export const FlowDetailModel = createCustomModel(() => {
       setStepUuid(steps[index].uid);
       updateWalkflow();
     }
+  };
+
+  const addChapterStep = (i: number) => {
+    if (!flowDetail) return;
+    const newStep = generateDefaultChapterStep();
+    steps.splice(i, 0, newStep);
+    setStepUuid(newStep.uid);
+    updateWalkflow();
   };
 
   return {
@@ -119,5 +133,6 @@ export const FlowDetailModel = createCustomModel(() => {
     updateWalkflow,
     designerConfig: flowDetail?.schema.designer,
     removeStep,
+    addChapterStep,
   };
 });

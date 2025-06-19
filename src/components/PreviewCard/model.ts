@@ -2,6 +2,7 @@ import { createCustomModel } from "@/common/createModel";
 import { useEffect, useState } from "react";
 import { preloadSchemaResources } from "./utils";
 import { useRequest } from "ahooks";
+import { NextStepKey } from "@/common/step";
 
 export interface PreviewCardProps {
   schema: FlowSchemaV1;
@@ -18,8 +19,6 @@ export enum InteractionState {
   Paused, // 暂停等待交互
   Completed, // 所有交互已完成
 }
-
-const NextStepKey = "next";
 
 export const PreviewCardModel = createCustomModel((props: PreviewCardProps) => {
   const { schema, targetUuid } = props;

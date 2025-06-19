@@ -1,7 +1,15 @@
 import classNames from "classnames";
 import { FlowDetailModel } from "../../model";
-import { Dropdown, Image, type MenuProps, Skeleton, theme } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import {
+  Dropdown,
+  Image,
+  type MenuProps,
+  Skeleton,
+  theme,
+  Tooltip,
+} from "antd";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { useRef } from "react";
 
 function StepCard(props: {
   cardInfo: ChapterStep | HotSpotStep;
@@ -84,6 +92,8 @@ function StepCard(props: {
     },
   ];
 
+  const dropDownDomRef = useRef<HTMLDivElement>(null);
+
   return (
     <div
       className={classNames(
@@ -98,23 +108,30 @@ function StepCard(props: {
     >
       {content}
       <div className=" absolute bottom-0 p-2 flex justify-between text-xs items-center w-full">
-        <div
-          className={classNames(
-            "flex items-center justify-center w-5 h-5 rounded-full",
-            {
-              " text-white": active,
-              " text-gray-700": !active,
-            }
-          )}
-          style={{
-            background: active ? colorPrimary : "rgba(229, 231, 235, 1)",
-          }}
-        >
-          {index}
+        <div className="flex items-center gap-1">
+          <div
+            className={classNames(
+              "flex items-center justify-center w-5 h-5 rounded-full",
+              {
+                " text-white": active,
+                " text-gray-700": !active,
+              }
+            )}
+            style={{
+              background: active ? colorPrimary : "rgba(229, 231, 235, 1)",
+            }}
+          >
+            {index}
+          </div>
+          <div>{cardInfo.name}</div>
         </div>
-        <div onClick={(e) => e.stopPropagation()}>
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="group"
+          ref={dropDownDomRef}
+        >
           <Dropdown menu={{ items }} rootClassName="w-48">
-            <div className="flex gap-[1px] w-5 h-5 items-center justify-center bg-gray-500 rounded-full border border-solid border-gray-500 group hover:bg-white transition-all">
+            <div className="flex gap-[1px] w-5 h-5 items-center justify-center bg-gray-500 rounded-full border border-solid border-gray-500  group-hover:bg-white transition-all">
               {[0, 1, 2].map((it) => {
                 return (
                   <div
@@ -127,6 +144,24 @@ function StepCard(props: {
           </Dropdown>
         </div>
       </div>
+    </div>
+  );
+}
+
+function Divider({ index }: { index: number }) {
+  const { addChapterStep } = FlowDetailModel.useModel();
+  return (
+    <div className="w-full h-[1px] bg-gray-200 my-1 relative flex-shrink-0">
+      <Tooltip title="添加「Chapter」步骤">
+        <div
+          onClick={() => {
+            addChapterStep(index);
+          }}
+          className=" cursor-pointer left-[50%] -mt-2.5 -ml-2.5 font-bold text-gray-500 text-xs absolute flex items-center justify-center w-5 h-5 rounded-full bg-white border border-solid border-gray-300"
+        >
+          <PlusOutlined />
+        </div>
+      </Tooltip>
     </div>
   );
 }
@@ -144,8 +179,14 @@ export default function Left() {
 
     return (
       <div className="flex flex-col gap-4 h-full p-4 scroll-content">
+        <Divider index={0} />
         {steps.map((it, index) => {
-          return <StepCard key={it.uid} cardInfo={it} index={index + 1} />;
+          return (
+            <>
+              <StepCard key={it.uid} cardInfo={it} index={index + 1} />
+              <Divider index={index + 1} />
+            </>
+          );
         })}
       </div>
     );

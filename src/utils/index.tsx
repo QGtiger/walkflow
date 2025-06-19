@@ -1,8 +1,14 @@
-const basename = process.env.NODE_ENV === "development" ? "" : "/walkflow";
+import { v4 as uuidv4 } from "uuid";
 
-export function generateUUID(): string {
-  return Math.random().toString(36).slice(2) + Date.now().toString(36);
+export function generateUuid() {
+  return uuidv4().replace(/-/g, "");
+  const uuidBuffer = Buffer.from(uuidv4().replace(/-/g, ""), "hex");
+  const base64Id = uuidBuffer.toString("base64").replace(/=/g, "");
+  // .substring(0, 22);
+  return base64Id;
 }
+
+const basename = process.env.NODE_ENV === "development" ? "" : "/walkflow";
 
 export function deepClone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
