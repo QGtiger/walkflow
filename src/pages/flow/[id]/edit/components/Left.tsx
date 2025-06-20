@@ -9,7 +9,8 @@ import {
   Tooltip,
 } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
+import { getStepName } from "@/utils/walkflowUtils";
 
 function StepCard(props: {
   cardInfo: ChapterStep | HotSpotStep;
@@ -111,7 +112,7 @@ function StepCard(props: {
         <div className="flex items-center gap-1">
           <div
             className={classNames(
-              "flex items-center justify-center w-5 h-5 rounded-full",
+              "flex items-center justify-center w-5 h-5 rounded-full flex-shrink-0",
               {
                 " text-white": active,
                 " text-gray-700": !active,
@@ -123,7 +124,7 @@ function StepCard(props: {
           >
             {index}
           </div>
-          <div>{cardInfo.name}</div>
+          <div className=" line-clamp-1">{getStepName(cardInfo, index)}</div>
         </div>
         <div
           onClick={(e) => e.stopPropagation()}
@@ -182,10 +183,10 @@ export default function Left() {
         <Divider index={0} />
         {steps.map((it, index) => {
           return (
-            <>
+            <Fragment key={it.uid}>
               <StepCard key={it.uid} cardInfo={it} index={index + 1} />
-              <Divider index={index + 1} />
-            </>
+              <Divider key={`${it.uid}-devider`} index={index + 1} />
+            </Fragment>
           );
         })}
       </div>

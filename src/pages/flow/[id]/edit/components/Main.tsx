@@ -54,7 +54,7 @@ export default function Main() {
             className="w-full h-full"
           />
         )}
-        <div className=" absolute inset-0 backdrop-blur-md bg-[#ffffffb3]">
+        <div className=" absolute inset-0 backdrop-blur-md bg-[#ffffffb3] px-10">
           <ChapterEditor key={stepInfo.uid} stepInfo={stepInfo} />
         </div>
       </div>

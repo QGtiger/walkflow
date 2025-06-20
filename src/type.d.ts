@@ -58,3 +58,5 @@ interface FlowSchemaV1 {
 }
 
 type TourbitSteps = Array<ChapterStep | HotSpotStep>;
+
+type TourbitStep = ChapterStep | HotSpotStep;

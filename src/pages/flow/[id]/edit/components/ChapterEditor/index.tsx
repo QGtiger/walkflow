@@ -1,14 +1,19 @@
-import { Button, Input } from "antd";
+import { Dropdown, Input } from "antd";
 import { FlowDetailModel } from "../../../model";
+import ChapterButton from "./ChapterButton";
+import { useRef } from "react";
+import DestinationSelect from "./DestinationSelect";
 
 export default function ChapterEditor({ stepInfo }: { stepInfo: ChapterStep }) {
+  const ref = useRef<HTMLDivElement>(null);
   const { updateWalkflow } = FlowDetailModel.useModel();
   const { title, subtitle, actions, align } = stepInfo;
 
   return (
     <div
-      className="h-full  flex flex-col justify-center px-10 gap-2"
+      className="h-full  flex flex-col justify-center gap-2 relative"
       key={stepInfo.uid}
+      ref={ref}
     >
       <Input
         className="p-0 text-2xl font-semibold"
@@ -47,18 +52,36 @@ export default function ChapterEditor({ stepInfo }: { stepInfo: ChapterStep }) {
         {actions.map((it, index) => {
           if (it.type === "button") {
             return (
-              <Button size="large" type="primary" key={index}>
-                <Input
-                  className="px-6 text-white text-center"
-                  defaultValue={it.text}
-                  placeholder="请输入按钮文案"
-                  variant="borderless"
-                  onBlur={(e) => {
-                    it.text = e.target.value;
-                    updateWalkflow();
-                  }}
-                />
-              </Button>
+              <Dropdown
+                key={index}
+                popupRender={() => {
+                  return (
+                    <div className="inline-flex items-center bg-white rounded-md border border-solid border-gray-400 p-1 shadow-lg">
+                      <div className="">
+                        <DestinationSelect
+                          destination={it.destination}
+                          onDestinationChange={(d) => {
+                            it.destination = d;
+                            updateWalkflow();
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                }}
+                trigger={["click"]}
+                placement="topCenter"
+              >
+                <div className="">
+                  <ChapterButton
+                    defaultValue={it.text}
+                    onBlur={(v) => {
+                      it.text = v;
+                      updateWalkflow();
+                    }}
+                  />
+                </div>
+              </Dropdown>
             );
           }
           return "暂不支持类型:" + it.type;

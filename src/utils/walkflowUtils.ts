@@ -14,6 +14,24 @@ function clearObjectURLs() {
   objectURLCacheList.length = 0; // 清空缓存列表
 }
 
+export function getStepByUid(
+  uid: string,
+  steps: TourbitSteps
+): {
+  index: number;
+  step: TourbitStep | undefined;
+} {
+  const index = steps.findIndex((s) => s.uid === uid);
+  if (index === -1) {
+    return { index: -1, step: undefined };
+  }
+  return { index, step: steps[index] };
+}
+
+export function getStepName(step: any, index: number) {
+  return `${step.name || step.title || `步骤${index}`}`;
+}
+
 export const getHotspotStepNearBy = (
   uid: string,
   steps: TourbitSteps

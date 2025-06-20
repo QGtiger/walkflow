@@ -1,26 +1,26 @@
-import Bg1 from '../../assets/bg-01.webp';
-import Bg2 from '../../assets/bg-02.webp';
-import Bg3 from '../../assets/bg-03.webp';
-import Bg4 from '../../assets/bg-04.webp';
-import Bg5 from '../../assets/bg-05.webp';
-import Bg6 from '../../assets/bg-06.webp';
-import Bg7 from '../../assets/bg-07.webp';
-import Bg8 from '../../assets/bg-08.webp';
+import Bg1 from "../../assets/bg-01.webp";
+import Bg2 from "../../assets/bg-02.webp";
+import Bg3 from "../../assets/bg-03.webp";
+import Bg4 from "../../assets/bg-04.webp";
+import Bg5 from "../../assets/bg-05.webp";
+import Bg6 from "../../assets/bg-06.webp";
+import Bg7 from "../../assets/bg-07.webp";
+import Bg8 from "../../assets/bg-08.webp";
 
-import bg1s from '../../assets/bg-01-s.avif';
-import bg2s from '../../assets/bg-02-s.avif';
-import bg3s from '../../assets/bg-03-s.avif';
-import bg4s from '../../assets/bg-04-s.avif';
-import bg5s from '../../assets/bg-05-s.avif';
-import bg6s from '../../assets/bg-06-s.avif';
-import bg7s from '../../assets/bg-07-s.avif';
-import bg8s from '../../assets/bg-08-s.avif';
-import classNames from 'classnames';
+import bg1s from "../../assets/bg-01-s.avif";
+import bg2s from "../../assets/bg-02-s.avif";
+import bg3s from "../../assets/bg-03-s.avif";
+import bg4s from "../../assets/bg-04-s.avif";
+import bg5s from "../../assets/bg-05-s.avif";
+import bg6s from "../../assets/bg-06-s.avif";
+import bg7s from "../../assets/bg-07-s.avif";
+import bg8s from "../../assets/bg-08-s.avif";
+import classNames from "classnames";
 
 const options = [
   {
-    value: '',
-    thumbnail: '',
+    value: "",
+    thumbnail: "",
   },
   {
     value: Bg1,
@@ -56,7 +56,13 @@ const options = [
   },
 ];
 
-export default function BackgroundSelect({ value, onChange }: { value?: string; onChange?: (value: string) => void }) {
+export default function BackgroundSelect({
+  value,
+  onChange,
+}: {
+  value?: string;
+  onChange?: (value: string) => void;
+}) {
   return (
     <div className="flex gap-1 flex-wrap">
       {options.map((it) => {
@@ -65,23 +71,27 @@ export default function BackgroundSelect({ value, onChange }: { value?: string; 
           <div
             key={it.value}
             className={classNames(
-              ' flex-grow-0 flex-shrink-0 relative rounded-sm transition-all w-[22px] h-[22px] cursor-pointer overflow-hidden',
-              ' border-border border-solid border',
+              " flex-grow-0 flex-shrink-0 relative rounded-md transition-all w-[22px] h-[22px] cursor-pointer overflow-hidden",
+              " border-border border-solid border",
               {
-                'border-primary': isActive,
-              },
+                "border-primary": isActive,
+              }
             )}
             onClick={() => onChange?.(it.value)}
           >
             {it.thumbnail ? (
               <div className="w-full h-full relative">
-                <img src={it.thumbnail} className="w-full h-full object-cover" alt="" />
+                <img
+                  src={it.thumbnail}
+                  className="w-full h-full object-cover"
+                  alt=""
+                />
                 <div
                   className={classNames(
-                    ' absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-all',
+                    " absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-all",
                     {
-                      'opacity-100': isActive,
-                    },
+                      "opacity-100": isActive,
+                    }
                   )}
                 >
                   <svg
@@ -107,8 +117,8 @@ export default function BackgroundSelect({ value, onChange }: { value?: string; 
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  className={classNames('text-gray-400 w-3 h-3', {
-                    'text-primary': isActive,
+                  className={classNames("text-gray-400 w-3 h-3", {
+                    "text-primary": isActive,
                   })}
                 >
                   <path

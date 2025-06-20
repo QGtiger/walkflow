@@ -122,9 +122,9 @@ export default function ProcessBar({ height }: { height: number }) {
       }
       setHoverUid("");
     };
-    document.addEventListener("mouseover", handleMouseOver);
+    ref.current?.addEventListener("mouseover", handleMouseOver);
     return () => {
-      document.removeEventListener("mouseover", handleMouseOver);
+      ref.current?.removeEventListener("mouseover", handleMouseOver);
     };
   }, []);
 

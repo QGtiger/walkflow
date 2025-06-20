@@ -125,7 +125,7 @@ export default function Right() {
         <Tooltip title="当前配置" placement="left">
           <div
             className={classNames(
-              "p-2 rounded-sm hover:bg-[#dbd4fa] cursor-pointer flex items-center justify-center",
+              "p-2 rounded-md hover:bg-[#dbd4fa] cursor-pointer flex items-center justify-center",
               {
                 "bg-[#dbd4fa]": activeKey === "card",
               }
@@ -141,7 +141,7 @@ export default function Right() {
         <Tooltip title="总览配置" placement="left">
           <div
             className={classNames(
-              "p-2 rounded-sm hover:bg-[#dbd4fa] cursor-pointer flex items-center justify-center",
+              "p-2 rounded-md hover:bg-[#dbd4fa] cursor-pointer flex items-center justify-center",
               {
                 "bg-[#dbd4fa]": activeKey === "setting",
               }
