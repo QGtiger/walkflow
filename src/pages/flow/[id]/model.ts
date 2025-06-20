@@ -2,6 +2,7 @@ import { walkflowRequest } from "@/api/walkflowApi";
 import { createCustomModel } from "@/common/createModel";
 import { generateDefaultChapterStep } from "@/common/step";
 import { deepClone } from "@/utils";
+import { preloadSchemaResources } from "@/utils/walkflowUtils";
 import { useQuery } from "@tanstack/react-query";
 import { useReactive, useRequest } from "ahooks";
 import { App } from "antd";
@@ -35,6 +36,11 @@ export const FlowDetailModel = createCustomModel(() => {
     queryFn: async () => {
       const { data } = await walkflowRequest<WalkflowDetail>({
         url: `detail/${id}`,
+      }).then(async (res) => {
+        if (res.data) {
+          res.data.schema = await preloadSchemaResources(res.data.schema);
+        }
+        return res;
       });
 
       if (data) {

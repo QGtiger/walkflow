@@ -1,3 +1,19 @@
+import { deepClone } from "@/utils";
+
+const objectURLCacheList: string[] = [];
+function createCustomObjectURL(blob: Blob): string {
+  // 如果不存在，创建新的 Blob URL 并存入缓存
+  const blobUrl = URL.createObjectURL(blob);
+  objectURLCacheList.push(blobUrl);
+  return blobUrl;
+}
+
+function clearObjectURLs() {
+  // 清理所有 Blob URL
+  objectURLCacheList.forEach((url) => URL.revokeObjectURL(url));
+  objectURLCacheList.length = 0; // 清空缓存列表
+}
+
 export const getHotspotStepNearBy = (
   uid: string,
   steps: TourbitSteps
@@ -25,3 +41,55 @@ export const getHotspotStepNearBy = (
     i += direction; // 向前或向后查找
   }
 };
+
+function fetchResourceWithBlobUrl(
+  url: string,
+  options?: RequestInit
+): Promise<{ blobUrl: string; response: Response }> {
+  return fetch(url, options)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.blob();
+    })
+    .then((blob) => {
+      const blobUrl = createCustomObjectURL(blob);
+      return { blobUrl, response: new Response(blob) };
+    });
+}
+
+export async function preloadSchemaResources(
+  schema: FlowSchemaV1
+): Promise<FlowSchemaV1> {
+  clearObjectURLs(); // 清理之前的 Blob URL 缓存
+  const cloneSchema = deepClone(schema);
+  const { designer, config } = cloneSchema;
+
+  await Promise.all([
+    designer.background
+      ? fetchResourceWithBlobUrl(designer.background).then(({ blobUrl }) => {
+          designer.background = blobUrl;
+        })
+      : Promise.resolve(),
+    config.screenRecordingUrl
+      ? fetchResourceWithBlobUrl(config.screenRecordingUrl).then(
+          ({ blobUrl }) => {
+            config.screenRecordingUrl = blobUrl;
+          }
+        )
+      : Promise.resolve(),
+    ...config.steps.reduce((promises, step) => {
+      if (step.type === "hotspot" && step.screenshotUrl) {
+        promises.push(
+          fetchResourceWithBlobUrl(step.screenshotUrl).then(({ blobUrl }) => {
+            step.screenshotUrl = blobUrl;
+          })
+        );
+      }
+      return promises;
+    }, [] as Promise<void>[]), // Assuming steps may have resources to preload
+  ]);
+
+  return cloneSchema;
+}

@@ -1,7 +1,5 @@
 import { createCustomModel } from "@/common/createModel";
 import { useEffect, useState } from "react";
-import { preloadSchemaResources } from "./utils";
-import { useRequest } from "ahooks";
 import { NextStepKey } from "@/common/step";
 
 export interface PreviewCardProps {
@@ -21,30 +19,13 @@ export enum InteractionState {
 }
 
 export const PreviewCardModel = createCustomModel((props: PreviewCardProps) => {
-  const { schema, targetUuid } = props;
-
-  const {
-    loading,
-    runAsync,
-    data: renderSchema,
-  } = useRequest(
-    () => {
-      return preloadSchemaResources(schema);
-    },
-    {
-      manual: true,
-    }
-  );
-
-  useEffect(() => {
-    runAsync();
-  }, [JSON.stringify(schema)]);
+  const { schema: renderSchema, targetUuid } = props;
 
   const {
     version = "1.0",
     designer,
     config: { steps, screenRecordingUrl },
-  } = renderSchema || schema;
+  } = renderSchema;
 
   if (steps.length == 0) throw new Error("没有步骤");
 
@@ -140,7 +121,6 @@ export const PreviewCardModel = createCustomModel((props: PreviewCardProps) => {
 
   return {
     ...props,
-    loading,
     num,
     steps,
     state,

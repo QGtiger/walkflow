@@ -1,4 +1,4 @@
-import { useCreation, useReactive, useSize } from "ahooks";
+import { useCreation, useSize } from "ahooks";
 import classNames from "classnames";
 import {
   PreviewCardModel,
@@ -20,7 +20,6 @@ function PreviewCard() {
     state,
     jumpStepDestination,
     embed,
-    loading,
   } = PreviewCardModel.useModel();
   const { version = "1.0", designer } = schema;
   const canvasSize = useSize(() => document.querySelector("#preview-wrapper"));
@@ -53,14 +52,6 @@ function PreviewCard() {
       return height - sy < processBarHeight;
     }
   }, [targetStepInfo, height]);
-
-  if (loading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        资源预加载中...
-      </div>
-    );
-  }
 
   if (version !== "1.0") {
     return <div>不支持的版本</div>;
