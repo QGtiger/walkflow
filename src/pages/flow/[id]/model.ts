@@ -123,9 +123,10 @@ export const FlowDetailModel = createCustomModel(() => {
     // 这里配合 layout 进行数据断言
     flowDetail: flowDetail!,
     ratio,
+    steps,
     stepUuid,
     setStepUuid,
-    stepInfo: flowDetail?.schema.config.steps.find((it) => it.uid === stepUuid),
+    stepInfo: steps.find((it) => it.uid === stepUuid),
 
     screenRecordingUrl: flowDetail?.schema.config.screenRecordingUrl,
     schema: flowDetail?.schema!,

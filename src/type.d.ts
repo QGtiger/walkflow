@@ -19,13 +19,13 @@ interface ExtensionSchemaV1 {
 
 interface ChapterStep {
   uid: string;
-  type: 'chapter';
+  type: "chapter";
   name?: string;
   title?: string;
   subtitle?: string;
-  align: 'left' | 'center' | 'right';
+  align: "left" | "center" | "right";
   actions: {
-    type: 'button';
+    type: "button";
     text: string;
     destination: string;
   }[];
@@ -33,7 +33,7 @@ interface ChapterStep {
 
 interface HotSpotStep {
   uid: string;
-  type: 'hotspot';
+  type: "hotspot";
   name?: string;
   title?: string;
   x: number;
@@ -41,13 +41,13 @@ interface HotSpotStep {
   w: number;
   h: number;
   t: number;
-  align: 'left' | 'center' | 'right';
+  align: "left" | "center" | "right";
   screenshotUrl: string;
   destination: string;
 }
 
 interface FlowSchemaV1 {
-  version: '1.0';
+  version: "1.0";
   designer: {
     background?: string;
   };
@@ -56,3 +56,5 @@ interface FlowSchemaV1 {
     steps: Array<ChapterStep | HotSpotStep>;
   };
 }
+
+type TourbitSteps = Array<ChapterStep | HotSpotStep>;

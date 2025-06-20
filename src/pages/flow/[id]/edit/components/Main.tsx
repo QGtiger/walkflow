@@ -1,7 +1,8 @@
 import { useSize } from "ahooks";
 import { FlowDetailModel } from "../../model";
-import { Button, Input } from "antd";
 import FocusIndicator from "@/components/FocusIndicator";
+import ChapterEditor from "./ChapterEditor";
+import { getHotspotStepNearBy } from "@/utils/walkflowUtils";
 
 export default function Main() {
   const {
@@ -10,6 +11,7 @@ export default function Main() {
     updateWalkflow,
     screenRecordingUrl,
     designerConfig,
+    steps,
   } = FlowDetailModel.useModel();
   const canvasSize = useSize(() => document.querySelector("#preview-wrapper"));
 
@@ -35,75 +37,25 @@ export default function Main() {
 
   let conent = null;
   if (stepInfo.type === "chapter") {
-    const { title, subtitle, actions, align } = stepInfo;
-    // TODO 先简单就是第一个
+    const nearHotSpotInfo = getHotspotStepNearBy(stepInfo.uid, steps);
     conent = (
-      <div className="w-full h-full relative">
-        <video
-          src={screenRecordingUrl}
-          controls={false}
-          className="w-full h-full"
-        />
-        <div className=" absolute inset-0 backdrop-blur-md bg-[#ffffffb3]">
-          <div
-            className="h-full  flex flex-col justify-center px-10 gap-2"
+      <div className="w-full h-full relative" key={stepInfo.uid}>
+        {nearHotSpotInfo ? (
+          <img
             key={stepInfo.uid}
-          >
-            <Input
-              className="p-0 text-2xl font-semibold"
-              defaultValue={title}
-              placeholder="请输入主标题"
-              variant="borderless"
-              onBlur={(e) => {
-                stepInfo.title = e.target.value;
-                updateWalkflow();
-              }}
-              style={{
-                textAlign: align,
-              }}
-            />
-            <Input.TextArea
-              className="p-0 scroll-content"
-              autoSize
-              defaultValue={subtitle}
-              placeholder="请输入副标题"
-              variant="borderless"
-              onBlur={(e) => {
-                stepInfo.subtitle = e.target.value;
-                updateWalkflow();
-              }}
-              style={{
-                textAlign: align,
-              }}
-            />
-
-            <div
-              className="flex gap-2"
-              style={{
-                justifyContent: align,
-              }}
-            >
-              {actions.map((it, index) => {
-                if (it.type === "button") {
-                  return (
-                    <Button size="large" type="primary" key={index}>
-                      <Input
-                        className="px-6 text-white text-center"
-                        defaultValue={it.text}
-                        placeholder="请输入按钮文案"
-                        variant="borderless"
-                        onBlur={(e) => {
-                          it.text = e.target.value;
-                          updateWalkflow();
-                        }}
-                      />
-                    </Button>
-                  );
-                }
-                return "暂不支持类型:" + it.type;
-              })}
-            </div>
-          </div>
+            src={nearHotSpotInfo.screenshotUrl}
+            alt=""
+            className="w-full h-full object-cover select-none pointer-events-none"
+          />
+        ) : (
+          <video
+            src={screenRecordingUrl}
+            controls={false}
+            className="w-full h-full"
+          />
+        )}
+        <div className=" absolute inset-0 backdrop-blur-md bg-[#ffffffb3]">
+          <ChapterEditor key={stepInfo.uid} stepInfo={stepInfo} />
         </div>
       </div>
     );
