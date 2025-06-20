@@ -38,21 +38,14 @@ class CountDown {
   }
 }
 
-const maxCount = 90;
-const endCount = 100;
-
 export const UploadModel = createCustomModel(() => {
   const [countNum, setCountNum] = useState(0);
   const schemaRef = useRef<any>(null);
-  const finishCbRef = useRef<() => void | null>(null);
 
   const countDownIns = useCreation(() => {
     return new CountDown({
       onChange: (count) => {
         setCountNum(count);
-        if (count >= endCount) {
-          finishCbRef.current?.();
-        }
       },
     });
   }, []);
@@ -65,7 +58,7 @@ export const UploadModel = createCustomModel(() => {
           const { process, schema } = data;
           schemaRef.current = schema;
 
-          const p = Math.min(Math.floor(process * 100), maxCount);
+          const p = Math.min(Math.floor(process * 100), 100);
           countDownIns.start(p);
         } else if (type === "uploadWalkFlowResourceError") {
           message.error(data || "上传失败");
@@ -79,15 +72,9 @@ export const UploadModel = createCustomModel(() => {
     };
   }, []);
 
-  const startCount = (cb: () => void) => {
-    countDownIns.start(endCount);
-    finishCbRef.current = cb;
-  };
-
   return {
     countNum,
     schema: schemaRef.current,
-    startCount,
-    isUploading: countNum < maxCount,
+    isUploading: countNum < 100,
   };
 });

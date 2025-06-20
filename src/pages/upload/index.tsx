@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Upload() {
-  const { countNum, schema, startCount, isUploading } = UploadModel.useModel();
+  const { countNum, schema, isUploading } = UploadModel.useModel();
   const nav = useNavigate();
   const schemaLatestRef = useLatest(schema);
 
@@ -25,10 +25,8 @@ export default function Upload() {
         },
       }).then(({ data }) => {
         if (data) {
-          startCount(() => {
-            nav(`/flow/${data.flowId}`, {
-              replace: true,
-            });
+          nav(`/flow/${data.flowId}`, {
+            replace: true,
           });
         }
       });
