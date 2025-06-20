@@ -40,7 +40,9 @@ export default function Chapter(props: {
         </motion.div>
 
         <motion.div
-          className="flex gap-2"
+          className={classNames("flex gap-2 ", {
+            "flex-col items-center": align === "center",
+          })}
           style={{
             justifyContent: align,
           }}

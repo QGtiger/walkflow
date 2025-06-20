@@ -19,3 +19,11 @@ export function generateDefaultChapterStep(): ChapterStep {
     ],
   };
 }
+
+export function getDefaultBtnAction() {
+  return {
+    type: "button" as const,
+    text: "",
+    destination: NextStepKey,
+  };
+}

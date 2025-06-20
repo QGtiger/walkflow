@@ -1,8 +1,11 @@
-import { Dropdown, Input } from "antd";
+import { Button, Dropdown, Input } from "antd";
 import { FlowDetailModel } from "../../../model";
 import ChapterButton from "./ChapterButton";
 import { useRef } from "react";
 import DestinationSelect from "./DestinationSelect";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { getDefaultBtnAction } from "@/common/step";
+import classNames from "classnames";
 
 export default function ChapterEditor({ stepInfo }: { stepInfo: ChapterStep }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -44,7 +47,9 @@ export default function ChapterEditor({ stepInfo }: { stepInfo: ChapterStep }) {
       />
 
       <div
-        className="flex gap-2"
+        className={classNames("flex gap-2 ", {
+          "flex-col items-center": align === "center",
+        })}
         style={{
           justifyContent: align,
         }}
@@ -56,7 +61,7 @@ export default function ChapterEditor({ stepInfo }: { stepInfo: ChapterStep }) {
                 key={index}
                 popupRender={() => {
                   return (
-                    <div className="inline-flex items-center bg-white rounded-md border border-solid border-gray-400 p-1 shadow-lg">
+                    <div className="px-2 inline-flex gap-2 items-center bg-white rounded-md border border-solid border-gray-400 p-1 shadow-lg">
                       <div className="">
                         <DestinationSelect
                           destination={it.destination}
@@ -66,6 +71,21 @@ export default function ChapterEditor({ stepInfo }: { stepInfo: ChapterStep }) {
                           }}
                         />
                       </div>
+
+                      {actions.length > 1 && (
+                        <>
+                          <div className="d h-[15px] w-[1px] bg-gray-400"></div>
+                          <div
+                            className="p-1 hover:bg-gray-200 rounded-md cursor-pointer w-6 h-6 flex items-center justify-center"
+                            onClick={() => {
+                              actions.splice(index, 1);
+                              updateWalkflow();
+                            }}
+                          >
+                            <DeleteOutlined />
+                          </div>
+                        </>
+                      )}
                     </div>
                   );
                 }}
@@ -86,6 +106,16 @@ export default function ChapterEditor({ stepInfo }: { stepInfo: ChapterStep }) {
           }
           return "暂不支持类型:" + it.type;
         })}
+        <Button
+          type="dashed"
+          size="large"
+          onClick={() => {
+            actions.push(getDefaultBtnAction());
+            updateWalkflow();
+          }}
+        >
+          <PlusOutlined />
+        </Button>
       </div>
     </div>
   );
