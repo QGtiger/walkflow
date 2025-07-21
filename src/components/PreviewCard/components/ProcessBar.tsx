@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 const maxCount = Math.floor(window.innerWidth / 120);
 
 function useProcess() {
-  const { num: actionNum, jumpStepByNum, steps } = PreviewCardModel.useModel();
+  const { num: actionNum, steps } = PreviewCardModel.useModel();
   const total = steps.length;
   const current = actionNum % total;
   const totalPages = Math.ceil(total / maxCount);
@@ -42,14 +42,14 @@ function useProcess() {
     (_, i) => i + start
   );
 
-  useEffect(() => {
-    if (current < start) {
-      jumpStepByNum(start);
-    }
-    if (current > end) {
-      jumpStepByNum(end);
-    }
-  }, [current, start, end]);
+  // useEffect(() => {
+  //   if (current < start) {
+  //     jumpStepByNum(start);
+  //   }
+  //   if (current > end) {
+  //     jumpStepByNum(end);
+  //   }
+  // }, [current, start, end]);
 
   return {
     start,
