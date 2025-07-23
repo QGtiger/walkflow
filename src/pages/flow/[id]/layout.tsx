@@ -5,7 +5,7 @@ import {
   PicLeftOutlined,
   ShareAltOutlined,
 } from "@ant-design/icons";
-import { Button, Popover, Segmented } from "antd";
+import { Button, Dropdown, Popover, Segmented } from "antd";
 import {
   useLocation,
   useNavigate,
@@ -52,7 +52,22 @@ function DetailLayout() {
                 Share
               </Button>
             </Popover>
-            <Button type="default" icon={<EllipsisOutlined />}></Button>
+            <Dropdown
+              menu={{
+                items: [
+                  {
+                    key: "switchPost",
+                    label: "切换到文章",
+                    onClick() {
+                      nav(`/post/${id}`);
+                    },
+                  },
+                ],
+              }}
+              trigger={["click"]}
+            >
+              <Button type="default" icon={<EllipsisOutlined />}></Button>
+            </Dropdown>
           </div>
         }
       />

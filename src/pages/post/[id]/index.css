@@ -1,0 +1,15 @@
+.custom-editor img {
+  max-width: 680px; /* 限制宽度（可调整） */
+  height: auto; /* 高度自适应 */
+  display: block; /* 避免行内样式导致的间距问题 */
+  border-radius: 4px; /* 可选：圆角 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 可选：阴影 */
+
+  cursor: pointer; /* 鼠标悬停时显示为手型 */
+
+  margin: 0px auto; /* 上下间距 */
+}
+
+.custom-editor .toastui-editor-contents {
+  font-size: 14px;
+}

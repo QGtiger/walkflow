@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 
-export default function CustomLoading() {
+export default function CustomLoading({ scale = 2 }: { scale?: number }) {
   return (
     <motion.div
       animate={{
-        scale: [1, 2, 2, 1, 1],
+        scale: [1, scale, scale, 1, 1],
         rotate: [0, 0, 180, 180, 0],
         borderRadius: ["3%", "3%", "50%", "50%", "3%"],
       }}

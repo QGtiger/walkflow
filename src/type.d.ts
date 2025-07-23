@@ -1,7 +1,12 @@
+interface FlowPostSchema {
+  content: string;
+}
+
 interface WalkflowDetail {
   flowId: string;
   flowName: string;
   schema: FlowSchemaV1;
+  postSchema: FlowPostSchema;
 }
 
 interface ExtensionSchemaV1 {

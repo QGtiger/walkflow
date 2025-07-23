@@ -18,6 +18,10 @@ export function getShareUrl(flowId: string): string {
   return `${window.location.origin}${basename}/share/${flowId}`;
 }
 
+export function getSharePostUrl(flowId: string): string {
+  return `${window.location.origin}${basename}/share/${flowId}/post`;
+}
+
 export function copy(text: string) {
   const el = document.createElement("textarea");
   el.value = text;
@@ -25,4 +29,48 @@ export function copy(text: string) {
   el.select();
   document.execCommand("copy");
   document.body.removeChild(el);
+}
+
+export async function chatWithLLM(messages: any[], tools = []) {
+  const response = await fetch(
+    `https://test-console.yingdao.com/ai-infra-api/chat`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gpt-4o",
+        messages,
+        tools,
+      }),
+    }
+  );
+  return response.json();
+}
+
+export async function uploadFile(config: {
+  blob: Blob | File;
+  name: string;
+  uploadUrl: string;
+}): Promise<string> {
+  const { uploadUrl } = config;
+  if (!uploadUrl) {
+    throw new Error("未配置上传文件的 URL");
+  }
+
+  const formData = new FormData();
+  formData.append("file", config.blob);
+  formData.append("filename", config.name);
+
+  return fetch(uploadUrl, {
+    headers: {
+      domain: "front-gw.yingdao.com",
+      ContentType: "multipart/form-data",
+    },
+    method: "POST",
+    body: formData,
+  })
+    .then((r) => r.json())
+    .then((r) => r.data.readUrl);
 }

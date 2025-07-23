@@ -114,13 +114,15 @@ const FocusIndicator = ({
 
   return (
     <Popover
-      open
+      open={!!content}
       content={
-        <div style={contentStyle}>
-          <span className="text-white whitespace-break-spaces ">
-            {content || "请补充文案"}
-          </span>
-        </div>
+        content ? (
+          <div style={contentStyle}>
+            <span className="text-white whitespace-break-spaces ">
+              {content}
+            </span>
+          </div>
+        ) : null
       }
       styles={{
         body: {
