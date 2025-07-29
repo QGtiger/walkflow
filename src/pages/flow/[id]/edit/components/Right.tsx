@@ -5,11 +5,12 @@ import {
   AreaChartOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { Form, Input, Segmented, Tooltip } from "antd";
+import { Form, Segmented, Tooltip } from "antd";
 import { FlowDetailModel } from "../../model";
 import { type PropsWithChildren, useEffect, useState } from "react";
 import classNames from "classnames";
 import BackgroundSelect from "./BackgroundSelect";
+import { HotStepConfig } from "./HotStepConfig";
 
 function Panel({
   title,
@@ -55,30 +56,7 @@ function StepConfig() {
   }
 
   if (stepInfo?.type === "hotspot") {
-    return (
-      <Form
-        onValuesChange={(changeValues) => {
-          Object.assign(stepInfo, changeValues);
-          updateWalkflow();
-        }}
-        initialValues={stepInfo}
-        layout="vertical"
-      >
-        <Form.Item name="title" label="显示文案">
-          <Input.TextArea placeholder="请补充文案" autoSize variant="filled" />
-        </Form.Item>
-        <Form.Item name="align" label="对齐方式">
-          <Segmented
-            options={[
-              { value: "left", icon: <AlignLeftOutlined /> },
-              { value: "center", icon: <AlignCenterOutlined /> },
-              { value: "right", icon: <AlignRightOutlined /> },
-            ]}
-            block
-          />
-        </Form.Item>
-      </Form>
-    );
+    return <HotStepConfig />;
   }
 }
 
