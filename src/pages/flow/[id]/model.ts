@@ -8,12 +8,6 @@ import { App } from "antd";
 import { useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
-interface WalkflowDetail {
-  flowId: string;
-  flowName: string;
-  schema: FlowSchemaV1;
-}
-
 export const FlowDetailModel = createCustomModel(() => {
   const { id } = useParams();
   const [stepUuid, setStepUuid] = useState("");
@@ -27,7 +21,7 @@ export const FlowDetailModel = createCustomModel(() => {
   });
 
   const { flowDetail, ratio } = viewModel;
-  const latestSchemaRef = useRef<FlowSchemaV1 | undefined>(undefined);
+  const latestWalkflowDetailRef = useRef<WalkflowDetail | undefined>(undefined);
   const steps = flowDetail?.schema.config.steps || [];
 
   useQuery({
@@ -48,7 +42,7 @@ export const FlowDetailModel = createCustomModel(() => {
         data.schema.designer = data.schema.designer || {};
 
         viewModel.flowDetail = data;
-        latestSchemaRef.current = deepClone(data.schema);
+        latestWalkflowDetailRef.current = deepClone(data);
 
         const item = data.schema.config.steps.at(0);
         if (!item) return;
@@ -68,24 +62,23 @@ export const FlowDetailModel = createCustomModel(() => {
   });
 
   const { runAsync: updateWalkflow } = useRequest(
-    async (opt?: { name?: string }) => {
+    async () => {
       if (!flowDetail) return;
-      const updatedSchema = flowDetail.schema;
       if (
-        JSON.stringify(updatedSchema) ===
-        JSON.stringify(latestSchemaRef.current)
+        JSON.stringify(flowDetail) ===
+        JSON.stringify(latestWalkflowDetailRef.current)
       )
         return;
       await walkflowRequest({
         url: "/update",
         method: "POST",
         data: {
-          ...opt,
-          schema: updatedSchema,
+          name: flowDetail.flowName,
+          schema: flowDetail.schema,
           flowId: id,
         },
       });
-      latestSchemaRef.current = deepClone(updatedSchema);
+      latestWalkflowDetailRef.current = deepClone(flowDetail);
     },
     {
       manual: true,

@@ -2,6 +2,14 @@ import { generateUuid } from "@/utils";
 
 export const NextStepKey = "next";
 
+export const NextStepKeyByUrl = "next-by-url";
+
+export const BuildInStepsKey = [NextStepKey, NextStepKeyByUrl];
+
+export function isBuildInStepKey(key: string) {
+  return BuildInStepsKey.includes(key);
+}
+
 export function generateDefaultChapterStep(): ChapterStep {
   return {
     uid: generateUuid(),

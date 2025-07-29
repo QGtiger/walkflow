@@ -4,15 +4,16 @@ import { motion } from "framer-motion";
 
 export default function Chapter(props: {
   data: ChapterStep;
-  jump?: (uid: string) => void;
   className?: string;
+  onActionClick?: (action: ChapterButtonAction) => void;
 }) {
   const { title, align, subtitle, actions } = props.data;
+  const { className, onActionClick } = props;
   return (
     <div
       className={classNames(
         " relative backdrop-blur-md bg-[#ffffffb3] w-full h-full rounded-md overflow-hidden",
-        props.className
+        className
       )}
     >
       <div className="h-full  flex flex-col justify-center px-10 gap-2">
@@ -57,7 +58,9 @@ export default function Chapter(props: {
                   size="large"
                   type="primary"
                   key={index}
-                  onClick={() => props.jump?.(it.destination)}
+                  onClick={() => {
+                    onActionClick?.(it);
+                  }}
                 >
                   <div className="px-6 text-white text-center">{it.text}</div>
                 </Button>

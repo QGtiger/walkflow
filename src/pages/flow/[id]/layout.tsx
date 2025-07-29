@@ -5,7 +5,7 @@ import {
   PicLeftOutlined,
   ShareAltOutlined,
 } from "@ant-design/icons";
-import { Button, Dropdown, Popover, Segmented } from "antd";
+import { Button, Dropdown, Input, Popover, Segmented } from "antd";
 import {
   useLocation,
   useNavigate,
@@ -18,7 +18,7 @@ import ShareContent from "./ShareContent";
 
 function DetailLayout() {
   const outlet = useOutlet();
-  const { flowDetail } = FlowDetailModel.useModel();
+  const { flowDetail, updateWalkflow } = FlowDetailModel.useModel();
   const { id } = useParams();
   const nav = useNavigate();
   const { pathname } = useLocation();
@@ -28,6 +28,21 @@ function DetailLayout() {
   return (
     <div className="flex flex-col h-screen">
       <CustomHeader
+        leftContent={
+          flowDetail && (
+            <Input
+              defaultValue={flowDetail?.flowName}
+              placeholder="请输入Walkflow 名称"
+              variant="filled"
+              size="large"
+              className=" bg-transparent w-[400px] font-semibold"
+              onChange={(e) => {
+                flowDetail.flowName = e.target.value;
+                updateWalkflow();
+              }}
+            />
+          )
+        }
         rightContent={
           <div className="flex gap-2">
             <Segmented

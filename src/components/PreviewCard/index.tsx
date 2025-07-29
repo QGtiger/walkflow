@@ -18,7 +18,7 @@ function PreviewCard() {
     hasBg,
     targetStepInfo,
     state,
-    jumpStepDestination,
+    jumpWithNextDestinationAction,
     embed,
   } = PreviewCardModel.useModel();
   const { version = "1.0", designer } = schema;
@@ -91,14 +91,14 @@ function PreviewCard() {
               <HotSpot
                 className={cls}
                 stepInfo={targetStepInfo}
-                jump={jumpStepDestination}
+                onActionClick={jumpWithNextDestinationAction}
               />
             )}
             {targetStepInfo.type === "chapter" && (
               <Chapter
                 className={cls}
                 data={targetStepInfo}
-                jump={jumpStepDestination}
+                onActionClick={jumpWithNextDestinationAction}
               />
             )}
           </div>

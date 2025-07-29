@@ -5,16 +5,16 @@ import classNames from "classnames";
 
 export default function HotSpot({
   stepInfo,
-  jump,
   className,
   noPopoverTile = false,
   onClick,
+  onActionClick,
 }: {
   stepInfo: HotSpotStep;
   className?: string;
-  jump?: (uid: string) => void;
   noPopoverTile?: boolean;
   onClick?: () => void;
+  onActionClick?: (action: NextDestinationAction) => void;
 }) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const canvasSize = useSize(() => canvasRef.current);
@@ -54,7 +54,7 @@ export default function HotSpot({
             color="#7f70f5"
             duration={1500}
             onClick={() => {
-              jump?.(stepInfo.destination);
+              onActionClick?.(stepInfo);
             }}
           />
         </div>

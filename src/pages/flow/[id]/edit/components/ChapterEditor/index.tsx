@@ -64,9 +64,9 @@ export default function ChapterEditor({ stepInfo }: { stepInfo: ChapterStep }) {
                     <div className="px-2 inline-flex gap-2 items-center bg-white rounded-md border border-solid border-gray-400 p-1 shadow-lg">
                       <div className="">
                         <DestinationSelect
-                          destination={it.destination}
-                          onDestinationChange={(d) => {
-                            it.destination = d;
+                          btnAction={it}
+                          onChange={(v) => {
+                            Object.assign(it, v);
                             updateWalkflow();
                           }}
                         />

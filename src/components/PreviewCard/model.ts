@@ -1,6 +1,6 @@
 import { createCustomModel } from "@/common/createModel";
 import { useEffect, useState } from "react";
-import { NextStepKey } from "@/common/step";
+import { isBuildInStepKey, NextStepKey } from "@/common/step";
 
 export interface PreviewCardProps {
   schema: FlowSchemaV1;
@@ -94,6 +94,37 @@ export const PreviewCardModel = createCustomModel((props: PreviewCardProps) => {
     }
   };
 
+  const jumpWithNextDestinationAction = (action: NextDestinationAction) => {
+    const { destination, url } = action;
+    if (isBuildInStepKey(destination)) {
+      if (destination === NextStepKey) {
+        const t = num + 1;
+        setNum(t);
+        if (t >= steps.length) {
+          // 已经到最后一步了
+          setState(InteractionState.Playing);
+        } else {
+          const s = steps[t];
+          // 下一步 不是 hotspot 就直接暂停
+          if (s.type !== "hotspot") {
+            setState(InteractionState.Paused);
+          } else {
+            setState(InteractionState.Playing);
+          }
+        }
+      } else {
+        // 如果是 next-by-url，则需要跳转到指定的 url
+        if (url) {
+          window.open(url, "_blank");
+        }
+      }
+    } else {
+      const { index } = getStep(destination);
+      setNum(index);
+      setState(InteractionState.Paused);
+    }
+  };
+
   const jumpStepByNum = (n: number) => {
     const uid = steps[n % steps.length].uid;
     jumpStepDestination(uid);
@@ -130,7 +161,7 @@ export const PreviewCardModel = createCustomModel((props: PreviewCardProps) => {
     recordingUrl: screenRecordingUrl,
     targetStepInfo,
     getStep,
-    jumpStepDestination,
+    jumpWithNextDestinationAction,
     jumpStepByNum,
     hasMoreSteps: num <= steps.length - 1,
     getPrevHotspotStepTimeStamp,

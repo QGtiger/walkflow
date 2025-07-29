@@ -1,10 +1,10 @@
 import { DownOutlined } from "@ant-design/icons";
 import { FlowDetailModel } from "../../../model";
-import { NextStepKey } from "@/common/step";
+import { isBuildInStepKey, NextStepKey, NextStepKeyByUrl } from "@/common/step";
 import { getStepByUid, getStepName } from "@/utils/walkflowUtils";
 import { useBoolean, useCreation } from "ahooks";
-import { Dropdown } from "antd";
-import { useRef } from "react";
+import { Dropdown, Form, Input, Modal, type FormInstance } from "antd";
+import { createRef, useRef } from "react";
 import classNames from "classnames";
 
 function getStepLabel(step: any, index: number) {
@@ -12,21 +12,30 @@ function getStepLabel(step: any, index: number) {
 }
 
 export default function DestinationSelect({
-  destination,
-  onDestinationChange,
+  btnAction,
+  onChange,
 }: {
-  destination: string;
-  onDestinationChange?: (destination: string) => void;
+  btnAction: ChapterButtonAction;
+  onChange?: (opt: {
+    destination?: string;
+    url?: string; // 如果是 NextStepKeyByUrl，则需要传入 url
+  }) => void;
 }) {
+  const { destination, url } = btnAction;
   const { steps, stepUuid } = FlowDetailModel.useModel();
   const ref = useRef<HTMLDivElement>(null);
   const [active, activeAction] = useBoolean(false);
+  const [modal, modalHolder] = Modal.useModal();
 
   const stepWithNext: {
     name?: string;
     uid: string;
   }[] = useCreation(() => {
     return [
+      {
+        name: "Next Step by URL",
+        uid: NextStepKeyByUrl,
+      },
       {
         name: "Next Step",
         uid: NextStepKey,
@@ -52,44 +61,94 @@ export default function DestinationSelect({
   return (
     <Dropdown
       trigger={["click"]}
-      overlayClassName="w-64"
+      // overlayClassName="w-64"
       onOpenChange={activeAction.set}
       getPopupContainer={() => ref.current || document.body}
       popupRender={() => {
         return (
-          <div className="p-1 flex gap-1 flex-col bg-white shadow-md rounded-md border border-gray-100 border-solid mt-1 max-h-[400px] overflow-auto">
-            {stepWithNext.map((step, index) => {
-              const isCurrent = step.uid === stepUuid;
-              return (
-                <div
-                  key={step.uid}
-                  className={classNames(
-                    "p-2 hover:bg-gray-200 cursor-pointer transition-all rounded-md flex items-center gap-1",
-                    {
-                      " bg-slate-200": step.uid === nextUuid,
-                    }
-                  )}
-                  onClick={() => {
-                    onDestinationChange?.(step.uid);
-                  }}
-                >
-                  <div className="line-clamp-1">
-                    {step.uid !== NextStepKey ? `${index}.  ` : ""}
-                    {getStepLabel(step, index)}
-                  </div>
-                  {isCurrent && (
-                    <div
-                      className="text-xs"
-                      style={{
-                        wordBreak: "keep-all",
-                      }}
-                    >
-                      (current)
+          <div className="flex  mt-1 items-start gap-1">
+            <div className=" w-64 flex-shrink-0 p-1 flex gap-1 flex-col bg-white shadow-md rounded-md border border-gray-100 border-solid max-h-[400px] overflow-auto">
+              {stepWithNext.map((step, index) => {
+                const isCurrent = step.uid === stepUuid;
+                return (
+                  <div
+                    key={step.uid}
+                    className={classNames(
+                      "p-2 hover:bg-gray-200 cursor-pointer transition-all rounded-md flex items-center gap-1",
+                      {
+                        " bg-slate-200": step.uid === nextUuid,
+                      }
+                    )}
+                    onClick={() => {
+                      if (step.uid === NextStepKeyByUrl) {
+                        const formRef = createRef<FormInstance>();
+                        modal.confirm({
+                          title: "设置跳转地址",
+                          icon: null,
+                          content: (
+                            <Form
+                              ref={formRef}
+                              layout="vertical"
+                              initialValues={{ url }}
+                            >
+                              <Form.Item
+                                name="url"
+                                label="地址"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "请输入跳转地址",
+                                  },
+                                  {
+                                    type: "url",
+                                    message: "请输入有效的 URL 地址",
+                                  },
+                                ]}
+                              >
+                                <Input
+                                  placeholder="请输入跳转地址"
+                                  variant="filled"
+                                />
+                              </Form.Item>
+                            </Form>
+                          ),
+                          onOk() {
+                            return formRef.current
+                              ?.validateFields()
+                              .then((values) => {
+                                onChange?.({
+                                  destination: NextStepKeyByUrl,
+                                  url: values.url,
+                                });
+                              });
+                          },
+                        });
+                      } else {
+                        onChange?.({
+                          destination: step.uid,
+                        });
+                      }
+                    }}
+                  >
+                    <div className="line-clamp-1">
+                      {!isBuildInStepKey(step.uid) ? `${index}.  ` : ""}
+                      {getStepLabel(step, index)}
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                    {isCurrent && (
+                      <div
+                        className="text-xs"
+                        style={{
+                          wordBreak: "keep-all",
+                        }}
+                      >
+                        (current)
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            {modalHolder}
           </div>
         );
       }}

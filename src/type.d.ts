@@ -29,14 +29,20 @@ interface ChapterStep {
   title?: string;
   subtitle?: string;
   align: "left" | "center" | "right";
-  actions: {
-    type: "button";
-    text: string;
-    destination: string;
-  }[];
+  actions: ChapterButtonAction[];
 }
 
-interface HotSpotStep {
+interface NextDestinationAction {
+  destination: string; // 目标步骤的 uid 包含 next next-by-url
+  url?: string; // 如果是 NextStepKeyByUrl，则需要传入 url
+}
+
+type ChapterButtonAction = {
+  type: "button";
+  text: string;
+} & NextDestinationAction;
+
+type HotSpotStep = {
   uid: string;
   type: "hotspot";
   name?: string;
@@ -48,8 +54,7 @@ interface HotSpotStep {
   t: number;
   align: "left" | "center" | "right";
   screenshotUrl: string;
-  destination: string;
-}
+} & NextDestinationAction;
 
 interface FlowSchemaV1 {
   version: "1.0";
