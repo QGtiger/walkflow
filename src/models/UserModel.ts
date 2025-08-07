@@ -10,6 +10,17 @@ interface UserInfo {
   uuid: string;
 }
 
+function getUrlParams(key: string) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(key);
+}
+
+const authToken = getUrlParams("authToken");
+
+if (authToken) {
+  setAccessToken(authToken);
+}
+
 export const UserModel = createCustomModel(() => {
   const nav = useNavigate();
   const { pathname, search } = useLocation();
