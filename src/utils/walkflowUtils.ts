@@ -72,6 +72,7 @@ function fetchResourceWithBlobUrl(
       return response.blob();
     })
     .then((blob) => {
+      console.log("Fetched resource:", url);
       const blobUrl = createCustomObjectURL(blob);
       return { blobUrl, response: new Response(blob) };
     });
