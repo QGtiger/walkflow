@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  walkflow-front:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: walkflow-front
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    networks:
+      - walkflow-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  walkflow-network:
+    driver: bridge
