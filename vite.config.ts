@@ -5,16 +5,21 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-  const env =
-    mode === "development" ? loadEnv(mode, process.cwd(), "") : process.env;
+  // 加载环境变量
+  // 第三个参数为空字符串表示加载所有环境变量（不限制前缀）
+  // 这样 API_BOSS_URL 和 API_WALKFLOW_URL 也能被加载
+  const env = loadEnv(mode, process.cwd(), "");
+  
+  // 合并系统环境变量（优先级更高）
+  const mergedEnv = { ...env, ...process.env };
 
-  const isLibBuild = env.VITE_BUILD_MODE === "lib";
+  const isLibBuild = mergedEnv.VITE_BUILD_MODE === "lib";
 
   if (isLibBuild) {
     return {
       plugins: [react()],
       define: {
-        "process.env": env,
+        "process.env": mergedEnv,
       },
       resolve: {
         alias: [{ find: "@", replacement: path.resolve(__dirname, "src") }],
@@ -37,7 +42,7 @@ export default defineConfig(({ mode }) => {
       alias: [{ find: "@", replacement: path.resolve(__dirname, "src") }],
     },
     define: {
-      "process.env": env,
+      "process.env": mergedEnv,
     },
 
     // 不做代理，否则我页面也会被代理
