@@ -8,7 +8,7 @@ export function generateUuid() {
   return base64Id;
 }
 
-const basename = process.env.NODE_ENV === "development" ? "" : "/walkflow";
+const basename = "";
 
 export function deepClone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));

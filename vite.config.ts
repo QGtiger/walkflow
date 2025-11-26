@@ -31,7 +31,7 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
-    base: process.env.NODE_ENV === "development" ? "/" : "/walkflow/",
+    base: "/",
     plugins: [react()],
     resolve: {
       alias: [{ find: "@", replacement: path.resolve(__dirname, "src") }],

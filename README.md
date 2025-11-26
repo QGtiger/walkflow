@@ -83,8 +83,8 @@ src/
 
 ### 环境要求
 
-- Node.js >= 18
-- pnpm (推荐) / npm / yarn
+- **Node.js** >= 18
+- **pnpm** (推荐) / npm / yarn
 
 ### 本地开发
 
@@ -143,7 +143,7 @@ docker compose up -d
 
 2. **访问应用**
 
-访问 `http://localhost:8080/walkflow`
+访问 `http://localhost:8080`
 
 3. **查看日志**
 
@@ -157,6 +157,13 @@ docker compose logs -f
 docker compose down
 ```
 
+5. **重新构建并启动**
+
+```bash
+docker compose build
+docker compose up -d
+```
+
 ### 单独使用 Docker
 
 ```bash
@@ -164,8 +171,18 @@ docker compose down
 docker build -t walkflow-front .
 
 # 运行容器
-docker run -d -p 8080:80 walkflow-front
+docker run -d -p 8080:80 --name walkflow-front walkflow-front
 ```
+
+### 生产环境部署
+
+在生产环境（如 ECS）上部署时，确保：
+
+1. **端口映射**：容器内部使用 80 端口，外部映射到 8080（或其他端口）
+2. **Nginx 配置**：已配置为支持 SPA 路由，所有请求会回退到 `index.html`
+3. **静态资源**：构建产物直接放在 nginx 根目录，无需子路径
+
+访问示例：`http://your-server-ip:8080`
 
 ## 📦 Web Component 使用
 
@@ -212,6 +229,28 @@ interface FlowSchemaV1 {
 - **Playing** - 正在播放
 - **Paused** - 暂停等待交互
 - **Completed** - 已完成
+
+## 📝 开发说明
+
+### 路由系统
+
+项目使用基于文件系统的路由，路由规则：
+
+- `src/pages/index.tsx` → `/`
+- `src/pages/login/index.tsx` → `/login`
+- `src/pages/dashboard/index.tsx` → `/dashboard`
+- `src/pages/flow/[id]/index.tsx` → `/flow/:id`
+
+### 环境变量
+
+- `API_BOSS_URL` - Boss API 地址
+- `API_WALKFLOW_URL` - WalkFlow API 地址
+- `VITE_BUILD_MODE` - 构建模式（`lib` 用于构建 Web Component）
+
+### 构建模式
+
+- **默认模式**：构建完整的 SPA 应用
+- **lib 模式**：构建 Web Component 库（`pnpm build:lib`）
 
 ## 🤝 贡献
 

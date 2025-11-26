@@ -4,7 +4,7 @@ import { initRoutes } from "./utils/pagerouter";
 import zhCN from "antd/locale/zh_CN";
 import { App, ConfigProvider } from "antd";
 
-const basename = process.env.NODE_ENV === "development" ? "/" : "/walkflow";
+const basename = "/";
 
 const router = createBrowserRouter(initRoutes(), {
   basename,
